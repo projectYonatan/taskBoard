@@ -17,3 +17,40 @@ html {
     height: 100%;
     padding: 1rem;
 }
+
+#header {
+    display: flex;
+    justify-content: center;
+}
+
+#form-wrapper {
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+    display: grid;
+    justify-content: center;
+}
+
+#notes-all-wrapper {
+    box-sizing: border-box;
+    margin: 2rem;
+    display: flex;
+    justify-content: flex-start;
+}
+
+#note-wrapper {
+    box-sizing: border-box;
+    padding: 1rem;
+    margin: 1rem;
+    background-image: url('../img/notebg.png');
+    background-repeat: no-repeat;
+    min-width: 200px;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#note-container {
+    width: 80%;
+    height: 80%;
+}
