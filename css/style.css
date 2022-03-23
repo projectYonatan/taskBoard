@@ -34,6 +34,7 @@ html {
     box-sizing: border-box;
     margin: 2rem;
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
 }
 
@@ -43,14 +44,31 @@ html {
     margin: 1rem;
     background-image: url('../img/notebg.png');
     background-repeat: no-repeat;
-    min-width: 200px;
-    min-height: 250px;
+    width: 200px;
+    height: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    /* align-items: center; */
 }
 
 #note-container {
-    width: 80%;
+    box-sizing: border-box;
+    width: 90%;
     height: 80%;
+}
+
+#note-details {
+    box-sizing: border-box;
+    margin: .2rem 0 1.2rem 0;
+    width: 95%;
+    height: 75%;
+    /* display: flex; */
+    /* flex-wrap: wrap; */
+    /* overflow: scroll; */
+    overflow-x: auto;
+    overflow-y: scroll;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    /* color: red; */
 }
