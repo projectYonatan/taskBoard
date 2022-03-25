@@ -90,6 +90,7 @@ function createNoteElement(note) {
 
 function createTask() {
     const task = {
+        "id": generateTaskID(),
         "details": detailsBox.value,
         "date": dateBox.value,
         "time": timeBox.value,
@@ -107,4 +108,20 @@ function saveTask() {
     clearForm();
     logNotes();
     displayNotes();
+}
+
+function generateTaskID() {
+    /** 
+     * this uid should be safe enough
+     * for this application's purposes
+     * but consider adding extra validation of uniqueness
+     * if time permits
+     * */
+
+    // milliseconds count from 1 Jan 1970
+    const stamp = Date.now();
+    // 5-digit random number:
+    const rand = Math.floor(Math.random() * 90000) + 10000;
+    const uid = `${stamp}_${rand}`;
+    return uid;
 }
