@@ -4,7 +4,6 @@ const timeBox = document.getElementById("timeBox");
 
 function initializePage() {
     clearForm();
-    logNotes();
     displayNotes();
 }
 
@@ -29,30 +28,47 @@ function clearForm() {
 
 //========Notes==========
 
+function logNotes() { // for debugging
+    const notes = loadNotes();
+    console.log(notes);
+}
+
+function isNoteExpired(note) {
+    const nowDate = Date.now();
+    const expireDate = new Date(`${note.date} ${note.time}`).getTime();
+    return nowDate > expireDate;
+}
+
+function setNoteExpired(note) {
+    note.expired = isNoteExpired(note);
+}
+
 function loadNotes() {
-    let notes = localStorage.getItem("notes");
-    if (notes === null) {
-        return notes = [];
-    }
-    notes = JSON.parse(notes);
+    const jsonNotesArray = localStorage.getItem("notes") === null ? [] : localStorage.getItem("notes");
+    const notes = JSON.parse(jsonNotesArray);
+    notes.forEach(note => setNoteExpired(note)); // mark expired notes
+    console.log(notes); // for debugging
     return notes;
 }
 
 function saveNotes(task) {
     const notes = loadNotes();
     notes.push(task);
-    // notes.unshift(task);
     const jsonNotesArray = JSON.stringify(notes);
     localStorage.setItem("notes", jsonNotesArray);
 }
 
-function logNotes() {
-    const notes = loadNotes();
-    console.log(notes);
+function deleteAllNotes() {
+    localStorage.removeItem("notes");
+    displayNotes();
 }
 
 function displayNotes() {
-    const notes = loadNotes();
+    let notes = loadNotes();
+
+    // filter expired notes before display, uncomment to display all notes
+    notes = notes.filter(note => !isNoteExpired(note));
+
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     notesAllWrapper.innerHTML = "";
 
@@ -79,24 +95,46 @@ function createNoteElement(note) {
     noteDate.innerHTML = note.date;
     noteTime.innerHTML = note.time;
 
-    noteContainer.append(noteDetails, noteDate, noteTime);
+    const noteDelete = document.createElement("button");
+    noteDelete.onclick = function() {
+        deleteNote(note.uid)
+    };
+    noteDelete.innerHTML = "X";
+
+    noteContainer.append(noteDelete, noteDetails, noteDate, noteTime);
     noteWrapper.append(noteContainer);
+
+    if (note.expired === true) { // in case we want to see expired notes unfiltered
+        noteContainer.classList.add("note-expired");
+        const msg = document.createElement("div");
+        msg.innerHTML = "EXPIRED";
+        noteContainer.insertBefore(msg, noteDate);
+    }
 
     return noteWrapper;
 }
 
+function deleteNote(uid) {
+
+    console.log("deleting note " + uid);
+
+    const notes = loadNotes();
+    const result = notes.filter(note => note.uid !== uid);
+
+    // for (let i = 0; i < notes.length; i++) {
+    //     if (notes[i].uid === uid) {
+    //         notes.splice(i, 1);
+    //         break;
+    //     }
+    // }
+
+    const jsonNotesArray = JSON.stringify(result);
+    localStorage.setItem("notes", jsonNotesArray);
+    displayNotes();
+}
+
 
 //========Task==========
-
-function createTask() {
-    const task = {
-        "id": generateTaskID(),
-        "details": detailsBox.value,
-        "date": dateBox.value,
-        "time": timeBox.value,
-    }
-    return task;
-}
 
 function saveTask() {
     if (!isFormValid()) {
@@ -106,22 +144,40 @@ function saveTask() {
     const task = createTask();
     saveNotes(task);
     clearForm();
-    logNotes();
     displayNotes();
 }
 
-function generateTaskID() {
+function createTask() {
+    const taskMetadata = setTaskMetadata();
+    const task = {
+        "timestamp": taskMetadata.timestamp,
+        "uid": taskMetadata.uid,
+        "details": detailsBox.value,
+        "date": dateBox.value,
+        "time": timeBox.value,
+        "expired": false,
+    }
+    return task;
+}
+
+function setTaskMetadata() {
+    const timestamp = Date.now();
+    const uid = generateTaskUID(timestamp);
+    const metadata = {
+        "timestamp": timestamp,
+        "uid": uid,
+    }
+    return metadata;
+}
+
+
+function generateTaskUID(timestamp) {
     /** 
-     * this uid should be safe enough
-     * for this application's purposes
-     * but consider adding extra validation of uniqueness
-     * if time permits
+     * this uid should be unique enough for this application's purposes
+     * but consider adding extra validation of uniqueness if time permits
      * */
 
-    // milliseconds count from 1 Jan 1970
-    const stamp = Date.now();
-    // 5-digit random number:
     const rand = Math.floor(Math.random() * 90000) + 10000;
-    const uid = `${stamp}_${rand}`;
+    const uid = `${timestamp}_${rand}`;
     return uid;
 }
