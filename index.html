@@ -9,8 +9,35 @@
     <script src="js/main.js" defer></script>
 </head>
 
-<body>
+<body onload="initializePage()">
     <div class="page-wrapper">
+        <div id="header">
+            <h1>My Task Board</h1>
+        </div>
+        <div id="form-wrapper">
+            <textarea id="detailsBox" cols="50" rows="5" placeholder="Task Description" style="resize: none;"></textarea><br>
+            <input type="date" id="dateBox" value="">
+            <input type="time" id="timeBox" value="">
+            <button onclick="clearForm()">Clear</button>
+            <button onclick="saveTask()">Save</button>
+            <button onclick="deleteAllNotes()">Delete All Notes</button>
+        </div>
+        <div id="notes-all-wrapper">
+            <!-- <div id="note-wrapper">
+                <div id="note-container">
+                    <div>Example task description</div>
+                    <div>Date</div>
+                    <div>Time</div>
+                </div>
+            </div>
+            <div id="note-wrapper">
+                <div id="note-container">
+                    <div>Example task description˝</div>
+                    <div>Date</div>
+                    <div>Time</div>
+                </div>
+            </div> -->
+        </div>
 
     </div>
 </body>
