@@ -99,6 +99,18 @@ function deleteAllNotes() {
     displayNotes();
 }
 
+function fadeInNotes(noteWrapper) {
+    noteWrapper.onmouseover = function() {
+        noteWrapper.classList.remove("note-not-loaded");
+        noteWrapper.classList.add("note-loaded");
+    }
+    noteWrapper.onmouseout = function() {
+        noteWrapper.classList.remove("note-loaded");
+        noteWrapper.classList.add("note-not-loaded");
+    }
+
+}
+
 function displayNotes() {
     let notes = loadNotes();
 
@@ -111,6 +123,8 @@ function displayNotes() {
     for (let note of notes) {
         const noteWrapper = createNoteElement(note);
         notesAllWrapper.append(noteWrapper);
+        noteWrapper.classList.add("note-not-loaded");
+        fadeInNotes(noteWrapper);
     }
 }
 
@@ -146,7 +160,6 @@ function createNoteElement(note) {
         msg.innerHTML = "EXPIRED";
         noteContainer.insertBefore(msg, noteDate);
     }
-
     return noteWrapper;
 }
 
@@ -176,7 +189,6 @@ function saveTask() {
     if (!isFormValid()) {
         return;
     }
-    console.log(timeBox.value);
     const task = createTask();
     saveNotes(task);
     clearForm();

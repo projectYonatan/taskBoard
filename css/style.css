@@ -30,7 +30,7 @@ html {
 
 #form-wrapper {
     box-sizing: border-box;
-    margin-bottom: 1rem;
+    /* margin-bottom: .5rem; */
     display: flex;
     justify-content: center;
     /* align-content: space-around; */
@@ -47,7 +47,7 @@ html {
     justify-content: space-evenly;
     align-items: center;
     width: 600px;
-    height: 200px;
+    height: 212px;
     padding: .4rem;
 }
 
@@ -61,11 +61,11 @@ html {
 #timeBox {
     box-sizing: border-box;
     background-color: rgba(255, 255, 255, 0.05);
-    box-shadow: 0px 0px 25px 5px rgba(235, 235, 235, 0.5);
+    /* box-shadow: 0px 0px 25px 5px rgba(235, 235, 235, 0.5); */
     border: 0;
     outline: 0;
     padding: .3rem;
-    margin-bottom: .6rem;
+    margin-bottom: .5rem;
 }
 
 #detailsBox {
@@ -76,12 +76,31 @@ html {
     line-height: 1.9rem;
 }
 
+#buttons-container {
+    margin-bottom: .7rem;
+}
+
 #notes-all-wrapper {
     box-sizing: border-box;
-    margin: 2rem;
+    margin: .5rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    width: 90%;
+}
+
+.note-not-loaded {
+    opacity: 0.25;
+    transition: opacity 3s;
+    /* background-color: ""; */
+    /* transition: opacity 3s, background-color 3s; */
+}
+
+.note-loaded {
+    opacity: 1;
+    transition: opacity 3s;
+    /* background-color: red; */
+    /* transition: opacity 3s, background-color 3s; */
 }
 
 #note-wrapper {
