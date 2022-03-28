@@ -10,20 +10,56 @@ function initializePage() {
 //========Form==========
 
 function isFormValid() {
-    if (detailsBox.value === "" || dateBox.value === "" || timeBox.value === "") {
+    if (detailsBox.value === "") {
+        showFormError("details");
+        return false;
+    }
+    if (dateBox.value === "") {
+        showFormError("date");
+        return false;
+    }
+    if (timeBox.value === "") {
+        showFormError("time");
+        return false;
+    }
+    if (!isFormDateValid()) {
         return false;
     }
     return true;
 }
 
-function showFormError() {
-    alert("Please fill task form");
+function isFormDateValid() {
+    const nowDate = Date.now();
+    const noteDate = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
+    if (nowDate > noteDate) {
+        alert("date and time must be in the future");
+        return false;
+    }
+    return true;
+}
+
+function showFormError(msg) {
+    alert(`Please fill task ${msg}`);
 }
 
 function clearForm() {
     detailsBox.value = "";
     dateBox.value = "";
     timeBox.value = "";
+    // cosmetic hack for browsers that don't show time/date inputs
+    formPlaceholders();
+}
+
+function formPlaceholders() {
+    // set placeholders for date/time form inputs
+    // can also be rewritten to set default form date/time values...
+    const now = new Date();
+    const hourFromNow = new Date(now);
+    hourFromNow.setHours(now.getHours() + 1);
+    const date = hourFromNow.toISOString().slice(0, 10);
+    const time = hourFromNow.toTimeString().slice(0, 5);
+    dateBox.placeholder = date;
+    timeBox.placeholder = time;
 }
 
 //========Notes==========
@@ -44,7 +80,7 @@ function setNoteExpired(note) {
 }
 
 function loadNotes() {
-    const jsonNotesArray = localStorage.getItem("notes") === null ? [] : localStorage.getItem("notes");
+    const jsonNotesArray = localStorage.getItem("notes") === null ? "[]" : localStorage.getItem("notes");
     const notes = JSON.parse(jsonNotesArray);
     notes.forEach(note => setNoteExpired(note)); // mark expired notes
     console.log(notes); // for debugging
@@ -138,9 +174,9 @@ function deleteNote(uid) {
 
 function saveTask() {
     if (!isFormValid()) {
-        showFormError();
         return;
     }
+    console.log(timeBox.value);
     const task = createTask();
     saveNotes(task);
     clearForm();
@@ -176,7 +212,6 @@ function generateTaskUID(timestamp) {
      * this uid should be unique enough for this application's purposes
      * but consider adding extra validation of uniqueness if time permits
      * */
-
     const rand = Math.floor(Math.random() * 90000) + 10000;
     const uid = `${timestamp}_${rand}`;
     return uid;
