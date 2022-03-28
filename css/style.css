@@ -21,6 +21,9 @@ html {
 #header {
     display: flex;
     justify-content: center;
+    /* font-family: "permanent_markerregular", sans-serif; */
+    font-family: "mansalvaregular", sans-serif;
+    font-size: 3.3rem;
 }
 
 #form-wrapper {
@@ -49,7 +52,6 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* align-items: center; */
 }
 
 #note-container {
@@ -63,14 +65,24 @@ html {
     margin: .2rem 0 1.2rem 0;
     width: 95%;
     height: 55%;
-    /* display: flex; */
-    /* flex-wrap: wrap; */
-    /* overflow: scroll; */
     overflow-x: auto;
     overflow-y: scroll;
     overflow-wrap: break-word;
     word-wrap: break-word;
-    /* color: red; */
+    /* font-family: 'nanum_penregular', monospace; */
+    /* font-size: 1.42rem; */
+    font-family: 'note_thisregular', monospace;
+    font-size: 1.1rem;
+}
+
+#note-date,
+#note-time {
+    /* font-family: 'unica_oneregular', cursive; */
+    /* font-family: 'special_eliteregular', cursive; */
+    /* font-family: 'roboto_monoregular', monospace; */
+    /* font-family: 'caveat_brushregular', monospace; */
+    font-family: 'comic_neueregular', monospace;
+    font-size: .9rem;
 }
 
 .note-expired {
