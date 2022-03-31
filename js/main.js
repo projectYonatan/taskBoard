@@ -99,15 +99,33 @@ function deleteAllNotes() {
     displayNotes();
 }
 
-function hoverOverNote(noteWrapper) {
+function hoverOverNote(noteId) {
+    noteWrapper = document.getElementById(noteId);
+    noteDelete = noteWrapper.querySelector("#note-delete");
+    noteDelete.style.color = "red";
     noteWrapper.onmouseover = function() {
-        noteWrapper.classList.remove("faded-out");
-        noteWrapper.classList.add("faded-in");
+        noteDelete.classList.remove("faded-out-quick");
+        noteDelete.classList.add("faded-in-quick");
     }
     noteWrapper.onmouseout = function() {
-        noteWrapper.classList.remove("faded-in");
-        noteWrapper.classList.add("faded-out");
+        noteDelete.classList.remove("faded-in-quick");
+        noteDelete.classList.add("faded-out-quick");
     }
+}
+
+function showDeleteButton(noteId) {
+    noteWrapper = document.getElementById(noteId);
+    noteDelete = noteWrapper.querySelector("#note-delete");
+    noteDelete.classList.remove("faded-out-quick");
+    noteDelete.classList.add("faded-in-quick");
+
+}
+
+function hideDeleteButton(noteId) {
+    noteWrapper = document.getElementById(noteId);
+    noteDelete = noteWrapper.querySelector("#note-delete");
+    noteDelete.classList.remove("faded-in-quick");
+    noteDelete.classList.add("faded-out-quick");
 }
 
 function fadeInNote(noteWrapper) {
@@ -148,11 +166,12 @@ function createNoteElement(note) {
     const noteDate = document.createElement("div");
     const noteTime = document.createElement("div");
 
-    noteWrapper.id = "note-wrapper";
-    noteContainer.id = "note-container";
-    noteDetails.id = "note-details";
-    noteDate.id = "note-date";
-    noteTime.id = "note-time";
+    noteWrapper.id = note.uid;
+    noteWrapper.className = "note-wrapper";
+    noteContainer.className = "note-container";
+    noteDetails.className = "note-details";
+    noteDate.className = "note-date";
+    noteTime.className = "note-time";
 
     noteDetails.innerHTML = note.details;
     noteDate.innerHTML = note.date;
@@ -163,9 +182,18 @@ function createNoteElement(note) {
         deleteNote(note.uid)
     };
     noteDelete.innerHTML = "X";
+    noteDelete.id = "note-delete";
+    noteDelete.classList.add("faded-out-quick");
 
     noteContainer.append(noteDelete, noteDetails, noteDate, noteTime);
     noteWrapper.append(noteContainer);
+
+    noteWrapper.onmouseover = function() {
+        showDeleteButton(noteWrapper.id);
+    }
+    noteWrapper.onmouseout = function() {
+        hideDeleteButton(noteWrapper.id);
+    }
 
     if (note.expired === true) { // in case we want to see expired notes unfiltered
         noteContainer.classList.add("note-expired");

@@ -89,17 +89,7 @@ html {
     width: 90%;
 }
 
-.faded-out {
-    opacity: 0;
-    transition: opacity 2s ease-out;
-}
-
-.faded-in {
-    opacity: 1;
-    transition: opacity 2s ease-out;
-}
-
-#note-wrapper {
+.note-wrapper {
     box-sizing: border-box;
     padding: 1rem;
     margin: 1rem;
@@ -110,16 +100,15 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* opacity: 0; */
 }
 
-#note-container {
+.note-container {
     box-sizing: border-box;
     width: 90%;
     height: 80%;
 }
 
-#note-details {
+.note-details {
     box-sizing: border-box;
     margin: .2rem 0 1.2rem 0;
     width: 97%;
@@ -139,8 +128,8 @@ html {
     /* color: rgba(0, 0, 0, 0.85); */
 }
 
-#note-date,
-#note-time {
+.note-date,
+.note-time {
     /* font-family: 'unica_oneregular', cursive; */
     /* font-family: 'special_eliteregular', cursive; */
     /* font-family: 'roboto_monoregular', monospace; */
@@ -154,4 +143,26 @@ html {
 
 .note-expired {
     color: red;
+}
+
+/* Transitions */
+
+.faded-out {
+    opacity: 0;
+    transition: opacity 2s ease-out;
+}
+
+.faded-in {
+    opacity: 1;
+    transition: opacity 2s ease-out;
+}
+
+.faded-out-quick {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.faded-in-quick {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
 }
