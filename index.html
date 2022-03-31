@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>taskBoard</title>
+    <title>My Task Board</title>
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/main.js" defer></script>
 </head>
@@ -12,27 +13,28 @@
 <body onload="initializePage()">
     <div class="page-wrapper">
         <div id="header">
-            <h1>My Task Board</h1>
+            <div>My Task Board</div>
         </div>
         <div id="form-wrapper">
-            <textarea id="detailsBox" cols="50" rows="5" placeholder="Task Description" style="resize: none;"></textarea><br>
-            <input type="date" id="dateBox" value="">
-            <input type="time" id="timeBox" value="">
-            <button onclick="clearForm()">Clear</button>
-            <button onclick="saveTask()">Save</button>
-            <button onclick="deleteAllNotes()">Delete All Notes</button>
+            <div id="form-container">
+                <textarea id="detailsBox" cols="50" rows="5" placeholder="Task Description" style="resize: none;"></textarea><br>
+                <label>Date Due:&nbsp;
+                    <input type="date" id="dateBox">
+                </label>
+                <label>Time Due:&nbsp;
+                    <input type="time" id="timeBox">
+                </label>
+                <div id="buttons-container">
+                    <button onclick="saveTask()">Save New Task</button>
+                    <button onclick="clearForm()">Clear Form</button>
+                    <button onclick="deleteAllNotes()">Delete All Notes</button>
+                </div>
+            </div>
         </div>
         <div id="notes-all-wrapper">
             <!-- <div id="note-wrapper">
                 <div id="note-container">
                     <div>Example task description</div>
-                    <div>Date</div>
-                    <div>Time</div>
-                </div>
-            </div>
-            <div id="note-wrapper">
-                <div id="note-container">
-                    <div>Example task description˝</div>
                     <div>Date</div>
                     <div>Time</div>
                 </div>

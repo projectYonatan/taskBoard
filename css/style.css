@@ -16,29 +16,80 @@ html {
     width: 100%;
     height: 100%;
     padding: 1rem;
+    /* display: grid; */
+    /* justify-items: center; */
 }
 
 #header {
     display: flex;
     justify-content: center;
+    /* font-family: "permanent_markerregular", sans-serif; */
+    font-family: "mansalvaregular", sans-serif;
+    font-size: 3.3rem;
 }
 
 #form-wrapper {
     box-sizing: border-box;
-    margin-bottom: 1rem;
-    display: grid;
+    /* margin-bottom: .5rem; */
+    display: flex;
     justify-content: center;
+    /* align-content: space-around; */
+    /* width: 75vw; */
+}
+
+#form-container {
+    background-image: url("../img/formbg.jpg");
+    /* background-repeat: repeat-y; */
+    /* background-repeat: repeat; */
+    /* background-size: auto; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 600px;
+    height: 212px;
+    padding: .4rem;
+}
+
+#form-container label {
+    color: gray;
+    font-family: monospace;
+}
+
+#detailsBox,
+#dateBox,
+#timeBox {
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.05);
+    /* box-shadow: 0px 0px 25px 5px rgba(235, 235, 235, 0.5); */
+    border: 0;
+    outline: 0;
+    padding: .3rem;
+    margin-bottom: .5rem;
+}
+
+#detailsBox {
+    margin-top: .3rem;
+    width: 75%;
+    height: 6rem;
+    font-size: .9rem;
+    line-height: 1.9rem;
+}
+
+#buttons-container {
+    margin-bottom: .7rem;
 }
 
 #notes-all-wrapper {
     box-sizing: border-box;
-    margin: 2rem;
+    margin: .5rem;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+    width: 90%;
 }
 
-#note-wrapper {
+.note-wrapper {
     box-sizing: border-box;
     padding: 1rem;
     margin: 1rem;
@@ -49,30 +100,69 @@ html {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* align-items: center; */
 }
 
-#note-container {
+.note-container {
     box-sizing: border-box;
     width: 90%;
     height: 80%;
 }
 
-#note-details {
+.note-details {
     box-sizing: border-box;
     margin: .2rem 0 1.2rem 0;
-    width: 95%;
-    height: 55%;
-    /* display: flex; */
-    /* flex-wrap: wrap; */
-    /* overflow: scroll; */
+    width: 97%;
+    height: 65%;
     overflow-x: auto;
     overflow-y: scroll;
     overflow-wrap: break-word;
     word-wrap: break-word;
-    /* color: red; */
+    font-family: 'nanum_penregular', cursive;
+    font-size: 1.3rem;
+    color: rgba(0, 0, 0, 0.75);
+    /* font-family: 'note_thisregular', cursive; */
+    /* font-size: 1.05rem; */
+    /* text-shadow: 0 0 1px rgba(32, 32, 32, 0.25); */
+    /* font-family: 'Schoolbell', cursive; */
+    /* font-size: .975rem; */
+    /* color: rgba(0, 0, 0, 0.85); */
+}
+
+.note-date,
+.note-time {
+    /* font-family: 'unica_oneregular', cursive; */
+    /* font-family: 'special_eliteregular', cursive; */
+    /* font-family: 'roboto_monoregular', monospace; */
+    /* font-family: 'caveat_brushregular', monospace; */
+    font-family: 'comic_neueregular', monospace;
+    font-size: .9rem;
+    padding-top: .15rem;
+    color: rgb(32, 32, 32, 0.9);
+    text-shadow: 0 0 1px rgba(32, 32, 32, 0.5);
 }
 
 .note-expired {
     color: red;
+}
+
+/* Transitions */
+
+.faded-out {
+    opacity: 0;
+    transition: opacity 2s ease-out;
+}
+
+.faded-in {
+    opacity: 1;
+    transition: opacity 2s ease-out;
+}
+
+.faded-out-quick {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.faded-in-quick {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
 }
