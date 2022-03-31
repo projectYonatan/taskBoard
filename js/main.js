@@ -99,16 +99,31 @@ function deleteAllNotes() {
     displayNotes();
 }
 
-function fadeInNotes(noteWrapper) {
+function hoverOverNote(noteWrapper) {
     noteWrapper.onmouseover = function() {
-        noteWrapper.classList.remove("note-not-loaded");
-        noteWrapper.classList.add("note-loaded");
+        noteWrapper.classList.remove("faded-out");
+        noteWrapper.classList.add("faded-in");
     }
     noteWrapper.onmouseout = function() {
-        noteWrapper.classList.remove("note-loaded");
-        noteWrapper.classList.add("note-not-loaded");
+        noteWrapper.classList.remove("faded-in");
+        noteWrapper.classList.add("faded-out");
     }
+}
 
+function fadeInNote(noteWrapper) {
+    window.setTimeout(() => {
+        noteWrapper.classList.remove("faded-out");
+        noteWrapper.classList.add("faded-in");
+    }, 40)
+}
+
+function displayNewNote(note) {
+    const notesAllWrapper = document.getElementById("notes-all-wrapper");
+    const noteWrapper = createNoteElement(note);
+    noteWrapper.classList.add("faded-out");
+    notesAllWrapper.append(noteWrapper);
+    // notesAllWrapper.prepend(noteWrapper);
+    fadeInNote(noteWrapper);
 }
 
 function displayNotes() {
@@ -123,8 +138,6 @@ function displayNotes() {
     for (let note of notes) {
         const noteWrapper = createNoteElement(note);
         notesAllWrapper.append(noteWrapper);
-        noteWrapper.classList.add("note-not-loaded");
-        fadeInNotes(noteWrapper);
     }
 }
 
@@ -190,9 +203,9 @@ function saveTask() {
         return;
     }
     const task = createTask();
-    saveNotes(task);
     clearForm();
-    displayNotes();
+    saveNotes(task);
+    displayNewNote(task);
 }
 
 function createTask() {
