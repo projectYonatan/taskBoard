@@ -99,23 +99,9 @@ function deleteAllNotes() {
     displayNotes();
 }
 
-function hoverOverNote(noteId) {
-    noteWrapper = document.getElementById(noteId);
-    noteDelete = noteWrapper.querySelector("#note-delete");
-    noteDelete.style.color = "red";
-    noteWrapper.onmouseover = function() {
-        noteDelete.classList.remove("faded-out-quick");
-        noteDelete.classList.add("faded-in-quick");
-    }
-    noteWrapper.onmouseout = function() {
-        noteDelete.classList.remove("faded-in-quick");
-        noteDelete.classList.add("faded-out-quick");
-    }
-}
-
 function showDeleteButton(noteId) {
     noteWrapper = document.getElementById(noteId);
-    noteDelete = noteWrapper.querySelector("#note-delete");
+    noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-out-quick");
     noteDelete.classList.add("faded-in-quick");
 
@@ -123,7 +109,7 @@ function showDeleteButton(noteId) {
 
 function hideDeleteButton(noteId) {
     noteWrapper = document.getElementById(noteId);
-    noteDelete = noteWrapper.querySelector("#note-delete");
+    noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-in-quick");
     noteDelete.classList.add("faded-out-quick");
 }
@@ -177,16 +163,19 @@ function createNoteElement(note) {
     noteDate.innerHTML = note.date;
     noteTime.innerHTML = note.time;
 
-    const noteDelete = document.createElement("button");
-    noteDelete.onclick = function() {
-        deleteNote(note.uid)
-    };
-    noteDelete.innerHTML = "X";
-    noteDelete.id = "note-delete";
-    noteDelete.classList.add("faded-out-quick");
+    const noteDelete = document.createElement("span");
+    noteDelete.className = "note-delete";
+    noteDelete.classList.add("faded-out-quick", "bi-x-square-fill");
 
-    noteContainer.append(noteDelete, noteDetails, noteDate, noteTime);
-    noteWrapper.append(noteContainer);
+    noteDelete.onclick = function() {
+        window.setTimeout(() => {
+            deleteNote(note.uid)
+        }, 40)
+    };
+
+
+    noteContainer.append(noteDetails, noteDate, noteTime);
+    noteWrapper.append(noteDelete, noteContainer);
 
     noteWrapper.onmouseover = function() {
         showDeleteButton(noteWrapper.id);
