@@ -83,15 +83,33 @@ function loadNotes() {
     const jsonNotesArray = localStorage.getItem("notes") === null ? "[]" : localStorage.getItem("notes");
     const notes = JSON.parse(jsonNotesArray);
     notes.forEach(note => setNoteExpired(note)); // mark expired notes
-    console.log(notes); // for debugging
     return notes;
 }
 
-function saveNotes(task) {
+function saveNewNote(task) {
     const notes = loadNotes();
     notes.push(task);
     const jsonNotesArray = JSON.stringify(notes);
     localStorage.setItem("notes", jsonNotesArray);
+}
+
+function deleteNote(uid) {
+
+    console.log("deleting note " + uid); // for debugging
+
+    const notes = loadNotes();
+    const result = notes.filter(note => note.uid !== uid);
+
+    // for (let i = 0; i < notes.length; i++) {
+    //     if (notes[i].uid === uid) {
+    //         notes.splice(i, 1);
+    //         break;
+    //     }
+    // }
+
+    const jsonNotesArray = JSON.stringify(result);
+    localStorage.setItem("notes", jsonNotesArray);
+    displayNotes();
 }
 
 function deleteAllNotes() {
@@ -99,7 +117,7 @@ function deleteAllNotes() {
     displayNotes();
 }
 
-function showDeleteButton(noteId) {
+function showNoteDeleteButton(noteId) {
     noteWrapper = document.getElementById(noteId);
     noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-out-quick");
@@ -107,7 +125,7 @@ function showDeleteButton(noteId) {
 
 }
 
-function hideDeleteButton(noteId) {
+function hideNoteDeleteButton(noteId) {
     noteWrapper = document.getElementById(noteId);
     noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-in-quick");
@@ -132,10 +150,12 @@ function displayNewNote(note) {
     noteWrapper.scrollIntoView({
         behavior: 'smooth'
     });
+    logNotes(); //for debugging
 }
 
 function displayNotes() {
     let notes = loadNotes();
+    console.log(notes); // for debugging
 
     // filter expired notes before display, uncomment to display all notes
     notes = notes.filter(note => !isNoteExpired(note));
@@ -182,10 +202,10 @@ function createNoteElement(note) {
     noteWrapper.append(noteDelete, noteContainer);
 
     noteWrapper.onmouseover = function() {
-        showDeleteButton(noteWrapper.id);
+        showNoteDeleteButton(noteWrapper.id);
     }
     noteWrapper.onmouseout = function() {
-        hideDeleteButton(noteWrapper.id);
+        hideNoteDeleteButton(noteWrapper.id);
     }
 
     if (note.expired === true) { // in case we want to see expired notes unfiltered
@@ -197,68 +217,33 @@ function createNoteElement(note) {
     return noteWrapper;
 }
 
-function deleteNote(uid) {
-
-    console.log("deleting note " + uid);
-
-    const notes = loadNotes();
-    const result = notes.filter(note => note.uid !== uid);
-
-    // for (let i = 0; i < notes.length; i++) {
-    //     if (notes[i].uid === uid) {
-    //         notes.splice(i, 1);
-    //         break;
-    //     }
-    // }
-
-    const jsonNotesArray = JSON.stringify(result);
-    localStorage.setItem("notes", jsonNotesArray);
-    displayNotes();
-}
-
-
 //========Task==========
 
 function saveTask() {
     if (!isFormValid()) {
         return;
     }
-    const task = createTask();
+    const task = createTaskObject();
     clearForm();
-    saveNotes(task);
+    saveNewNote(task);
     displayNewNote(task);
 }
 
-function createTask() {
-    const taskMetadata = setTaskMetadata();
-    const task = {
-        "timestamp": taskMetadata.timestamp,
-        "uid": taskMetadata.uid,
+function createTaskObject() {
+    const timestamp = Date.now();
+    const uid = generateTaskUID(timestamp);
+    return {
+        "timestamp": timestamp,
+        "uid": uid,
         "details": detailsBox.value,
         "date": dateBox.value,
         "time": timeBox.value,
         "expired": false,
     }
-    return task;
 }
 
-function setTaskMetadata() {
-    const timestamp = Date.now();
-    const uid = generateTaskUID(timestamp);
-    const metadata = {
-        "timestamp": timestamp,
-        "uid": uid,
-    }
-    return metadata;
-}
-
-
+/** append 5-digit randon int to epoch timestamp */
 function generateTaskUID(timestamp) {
-    /** 
-     * this uid should be unique enough for this application's purposes
-     * but consider adding extra validation of uniqueness if time permits
-     * */
     const rand = Math.floor(Math.random() * 90000) + 10000;
-    const uid = `${timestamp}_${rand}`;
-    return uid;
+    return `${timestamp}_${rand}`;
 }
