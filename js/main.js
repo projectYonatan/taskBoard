@@ -128,7 +128,10 @@ function displayNewNote(note) {
     notesAllWrapper.append(noteWrapper);
     // notesAllWrapper.prepend(noteWrapper);
     fadeInNote(noteWrapper);
-    noteWrapper.scrollIntoView(true);
+    // noteWrapper.scrollIntoView(true);
+    noteWrapper.scrollIntoView({
+        behavior: 'smooth'
+    });
 }
 
 function displayNotes() {

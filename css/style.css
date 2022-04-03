@@ -16,6 +16,7 @@ html {
     width: 100%;
     height: 100%;
     padding: 1rem;
+    padding-top: .5rem;
     /* display: grid; */
     /* justify-items: center; */
 }
@@ -25,7 +26,8 @@ html {
     justify-content: center;
     /* font-family: "permanent_markerregular", sans-serif; */
     font-family: "mansalvaregular", sans-serif;
-    font-size: 3.3rem;
+    font-size: 3rem;
+    /* background-color: green; */
 }
 
 #form-wrapper {
@@ -86,13 +88,31 @@ html {
     margin-bottom: .4rem;
 }
 
+#noteboard-wrapper {
+    display: flex;
+    justify-content: center;
+    /* height: 50%; */
+    margin: .5rem 0;
+    overflow-y: hidden;
+    /* background-color: red; */
+}
+
+#noteboard-wrapper:hover {
+    overflow-y: scroll;
+}
+
 #notes-all-wrapper {
     box-sizing: border-box;
-    margin: .5rem;
+    /* margin: .5rem; */
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     width: 90%;
+    padding-left: 1.8rem;
+    /* background-color: red; */
+    /* display: grid; */
+    /* grid-template-rows: 1fr; */
+    /* grid-template-columns: repeat(5, 1fr); */
 }
 
 .note-wrapper {
@@ -121,7 +141,7 @@ html {
     width: 97%;
     height: 65%;
     overflow-x: auto;
-    overflow-y: scroll;
+    overflow-y: hidden;
     overflow-wrap: break-word;
     word-wrap: break-word;
     font-family: 'nanum_penregular', cursive;
@@ -133,6 +153,10 @@ html {
     /* font-family: 'Schoolbell', cursive; */
     /* font-size: .975rem; */
     /* color: rgba(0, 0, 0, 0.85); */
+}
+
+.note-details:hover {
+    overflow-y: scroll;
 }
 
 .note-date,
