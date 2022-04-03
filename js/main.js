@@ -95,11 +95,11 @@ function deleteAllNotes() {
 function addNewNote(task) {
     console.log("adding note " + task.uid); // for debugging
     const notes = loadAllNotes();
-    task.isNew = true; // temp prop for new note, delete in displayNewNote()
     notes.push(task);
-    saveAllNotes(notes);
-    // displayNewNote(task);
     displayAllNotes();
+    saveAllNotes(notes);
+    displayNewNote(task);
+    console.log(notes); // for debugging
 }
 
 function deleteNote(uid) {
@@ -143,7 +143,6 @@ function displayNewNote(note) {
     noteWrapper.scrollIntoView({
         behavior: 'smooth'
     });
-    delete note.isNew;
 }
 
 function displayAllNotes() {
@@ -151,20 +150,15 @@ function displayAllNotes() {
     console.log("all notes in localStorage:"); // for debugging
     console.log(notes); // for debugging
 
-    notes = notes.filter(note => !isNoteExpired(note)); // filter out expired notes
+    notes = notes.filter(note => !(note.expired)); // filter out expired notes
 
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     notesAllWrapper.innerHTML = "";
 
-    for (let note of notes) {
-        if (note.isNew) {
-            displayNewNote(note);
-        } else {
-            const noteWrapper = createNoteElement(note);
-            notesAllWrapper.append(noteWrapper);
-        }
+    for (const note of notes) {
+        const noteWrapper = createNoteElement(note);
+        notesAllWrapper.append(noteWrapper);
     }
-    saveAllNotes(notes);
 }
 
 function createNoteElement(note) {
