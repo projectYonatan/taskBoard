@@ -29,6 +29,10 @@
                     <button onclick="saveTask()">Save New Task</button>
                     <button onclick="clearForm()">Clear Form</button>
                     <button onclick="deleteAllNotes()">Delete All Notes</button>
+                    <select id="isExpiredHiddenBox" onchange="displayAllNotes()">
+                        <option value="1" selected>Hide Expired Notes</option>
+                        <option value="0">Show Expired Notes</option>
+                    </select>
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ const timeBox = document.getElementById("timeBox");
 
 function initializePage() {
     clearForm();
+    resetIsExpiredHidden(); // always hide expired notes on page refresh
     displayAllNotes();
     logAllNotes(); // for debugging
 }
@@ -134,19 +135,15 @@ function logAllNotes() { // for debugging
 
 //======== Notes Display ==========
 
-function showNoteDeleteButton(noteId) {
-    noteWrapper = document.getElementById(noteId);
-    noteDelete = noteWrapper.querySelector(".note-delete");
-    noteDelete.classList.remove("faded-out-quick");
-    noteDelete.classList.add("faded-in-quick");
-
+function isExpiredHidden() {
+    const isExpiredHidden = !!+document.getElementById("isExpiredHiddenBox").value;
+    console.log(`Expired notes are hidden: ${isExpiredHidden}`); // for debugging
+    return isExpiredHidden;
 }
 
-function hideNoteDeleteButton(noteId) {
-    noteWrapper = document.getElementById(noteId);
-    noteDelete = noteWrapper.querySelector(".note-delete");
-    noteDelete.classList.remove("faded-in-quick");
-    noteDelete.classList.add("faded-out-quick");
+function resetIsExpiredHidden() {
+    const isExpiredHiddenBox = document.getElementById("isExpiredHiddenBox");
+    isExpiredHiddenBox.value = "1";
 }
 
 function fadeInNote(noteWrapper) {
@@ -169,8 +166,9 @@ function displayNewNote(note) {
 
 function displayAllNotes() {
     let notes = loadAllNotes();
-
-    notes = notes.filter(note => !(note.expired)); // filter out expired notes
+    if (isExpiredHidden()) {
+        notes = notes.filter(note => !(note.expired)); // filter out expired notes
+    }
 
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     notesAllWrapper.innerHTML = "";
@@ -209,7 +207,6 @@ function createNoteElement(note) {
         }, 40)
     };
 
-
     noteContainer.append(noteDetails, noteDate, noteTime);
     noteWrapper.append(noteDelete, noteContainer);
 
@@ -224,7 +221,23 @@ function createNoteElement(note) {
         noteContainer.classList.add("note-expired");
         const msg = document.createElement("div");
         msg.innerHTML = "EXPIRED";
-        noteContainer.insertBefore(msg, noteDate);
+        // noteContainer.insertBefore(msg, noteDate);
+        noteContainer.insertBefore(msg, noteDetails);
     }
     return noteWrapper;
+}
+
+function showNoteDeleteButton(noteId) {
+    noteWrapper = document.getElementById(noteId);
+    noteDelete = noteWrapper.querySelector(".note-delete");
+    noteDelete.classList.remove("faded-out-quick");
+    noteDelete.classList.add("faded-in-quick");
+
+}
+
+function hideNoteDeleteButton(noteId) {
+    noteWrapper = document.getElementById(noteId);
+    noteDelete = noteWrapper.querySelector(".note-delete");
+    noteDelete.classList.remove("faded-in-quick");
+    noteDelete.classList.add("faded-out-quick");
 }
