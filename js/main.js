@@ -5,6 +5,7 @@ const timeBox = document.getElementById("timeBox");
 function initializePage() {
     clearForm();
     displayAllNotes();
+    logAllNotes(); // for debugging
 }
 
 //======== Task ==========
@@ -104,6 +105,7 @@ function deleteAllNotes() {
     console.log("deleting all notes"); // for debugging
     localStorage.removeItem("notes");
     displayAllNotes();
+    logAllNotes(); // for debugging
 }
 
 function addNewNote(task) {
@@ -113,7 +115,7 @@ function addNewNote(task) {
     displayAllNotes();
     saveAllNotes(notes);
     displayNewNote(task);
-    console.log(notes); // for debugging
+    logAllNotes(); // for debugging
 }
 
 function deleteNote(uid) {
@@ -122,6 +124,13 @@ function deleteNote(uid) {
     const result = notes.filter(note => note.uid !== uid);
     saveAllNotes(result);
     displayAllNotes();
+    logAllNotes(); // for debugging
+}
+
+function logAllNotes() { // for debugging
+    const notes = loadAllNotes();
+    console.log("all notes in localStorage:");
+    console.log(notes);
 }
 
 //======== Notes Display ==========
@@ -161,8 +170,6 @@ function displayNewNote(note) {
 
 function displayAllNotes() {
     let notes = loadAllNotes();
-    console.log("all notes in localStorage:"); // for debugging
-    console.log(notes); // for debugging
 
     notes = notes.filter(note => !(note.expired)); // filter out expired notes
 
