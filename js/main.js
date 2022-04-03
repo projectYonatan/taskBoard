@@ -19,10 +19,9 @@ function saveTask() {
 
 function createTaskObject() {
     const timestamp = Date.now();
-    const uid = generateTaskUID(timestamp);
     return {
         "timestamp": timestamp,
-        "uid": uid,
+        "uid": generateTaskUID(timestamp),
         "details": detailsBox.value,
         "date": dateBox.value,
         "time": timeBox.value,
@@ -30,7 +29,7 @@ function createTaskObject() {
     }
 }
 
-/** append 5-digit randon int to epoch timestamp */
+/** append random 5-digit int to epoch timestamp */
 function generateTaskUID(timestamp) {
     const rand = Math.floor(Math.random() * 90000) + 10000;
     return `${timestamp}_${rand}`;
