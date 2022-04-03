@@ -4,10 +4,38 @@ const timeBox = document.getElementById("timeBox");
 
 function initializePage() {
     clearForm();
-    displayNotes();
+    displayAllNotes();
+    logAllNotes(); // for debugging
 }
 
-//========Form==========
+//======== Task ==========
+
+function saveTask() {
+    if (!isFormValid()) return;
+    const task = createTaskObject();
+    addNewNote(task);
+    clearForm();
+}
+
+function createTaskObject() {
+    const timestamp = Date.now();
+    return {
+        "timestamp": timestamp,
+        "uid": generateTaskUID(timestamp),
+        "details": detailsBox.value,
+        "date": dateBox.value,
+        "time": timeBox.value,
+        "expired": false,
+    }
+}
+
+/** append random 5-digit int to epoch timestamp */
+function generateTaskUID(timestamp) {
+    const rand = Math.floor(Math.random() * 90000) + 10000;
+    return `${timestamp}_${rand}`;
+}
+
+//======== Form ==========
 
 function isFormValid() {
     if (detailsBox.value === "") {
@@ -46,28 +74,9 @@ function clearForm() {
     detailsBox.value = "";
     dateBox.value = "";
     timeBox.value = "";
-    // cosmetic hack for browsers that don't show time/date inputs
-    formPlaceholders();
 }
 
-function formPlaceholders() {
-    // set placeholders for date/time form inputs
-    // can also be rewritten to set default form date/time values...
-    const now = new Date();
-    const hourFromNow = new Date(now);
-    hourFromNow.setHours(now.getHours() + 1);
-    const date = hourFromNow.toISOString().slice(0, 10);
-    const time = hourFromNow.toTimeString().slice(0, 5);
-    dateBox.placeholder = date;
-    timeBox.placeholder = time;
-}
-
-//========Notes==========
-
-function logNotes() { // for debugging
-    const notes = loadNotes();
-    console.log(notes);
-}
+//======== Notes Storage ==========
 
 function isNoteExpired(note) {
     const nowDate = Date.now();
@@ -79,27 +88,53 @@ function setNoteExpired(note) {
     note.expired = isNoteExpired(note);
 }
 
-function loadNotes() {
+function loadAllNotes() {
     const jsonNotesArray = localStorage.getItem("notes") === null ? "[]" : localStorage.getItem("notes");
     const notes = JSON.parse(jsonNotesArray);
     notes.forEach(note => setNoteExpired(note)); // mark expired notes
-    console.log(notes); // for debugging
     return notes;
 }
 
-function saveNotes(task) {
-    const notes = loadNotes();
-    notes.push(task);
+function saveAllNotes(notes) {
     const jsonNotesArray = JSON.stringify(notes);
     localStorage.setItem("notes", jsonNotesArray);
 }
 
 function deleteAllNotes() {
+    console.log("deleting all notes"); // for debugging
     localStorage.removeItem("notes");
-    displayNotes();
+    displayAllNotes();
+    logAllNotes(); // for debugging
 }
 
-function showDeleteButton(noteId) {
+function addNewNote(task) {
+    console.log("adding note " + task.uid); // for debugging
+    const notes = loadAllNotes();
+    notes.push(task);
+    displayAllNotes();
+    saveAllNotes(notes);
+    displayNewNote(task);
+    logAllNotes(); // for debugging
+}
+
+function deleteNote(uid) {
+    console.log("deleting note " + uid); // for debugging
+    const notes = loadAllNotes();
+    const result = notes.filter(note => note.uid !== uid);
+    saveAllNotes(result);
+    displayAllNotes();
+    logAllNotes(); // for debugging
+}
+
+function logAllNotes() { // for debugging
+    const notes = loadAllNotes();
+    console.log("all notes in localStorage:");
+    console.log(notes);
+}
+
+//======== Notes Display ==========
+
+function showNoteDeleteButton(noteId) {
     noteWrapper = document.getElementById(noteId);
     noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-out-quick");
@@ -107,7 +142,7 @@ function showDeleteButton(noteId) {
 
 }
 
-function hideDeleteButton(noteId) {
+function hideNoteDeleteButton(noteId) {
     noteWrapper = document.getElementById(noteId);
     noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-in-quick");
@@ -126,24 +161,21 @@ function displayNewNote(note) {
     const noteWrapper = createNoteElement(note);
     noteWrapper.classList.add("faded-out");
     notesAllWrapper.append(noteWrapper);
-    // notesAllWrapper.prepend(noteWrapper);
     fadeInNote(noteWrapper);
-    // noteWrapper.scrollIntoView(true);
     noteWrapper.scrollIntoView({
         behavior: 'smooth'
     });
 }
 
-function displayNotes() {
-    let notes = loadNotes();
+function displayAllNotes() {
+    let notes = loadAllNotes();
 
-    // filter expired notes before display, uncomment to display all notes
-    notes = notes.filter(note => !isNoteExpired(note));
+    notes = notes.filter(note => !(note.expired)); // filter out expired notes
 
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     notesAllWrapper.innerHTML = "";
 
-    for (let note of notes) {
+    for (const note of notes) {
         const noteWrapper = createNoteElement(note);
         notesAllWrapper.append(noteWrapper);
     }
@@ -182,10 +214,10 @@ function createNoteElement(note) {
     noteWrapper.append(noteDelete, noteContainer);
 
     noteWrapper.onmouseover = function() {
-        showDeleteButton(noteWrapper.id);
+        showNoteDeleteButton(noteWrapper.id);
     }
     noteWrapper.onmouseout = function() {
-        hideDeleteButton(noteWrapper.id);
+        hideNoteDeleteButton(noteWrapper.id);
     }
 
     if (note.expired === true) { // in case we want to see expired notes unfiltered
@@ -195,70 +227,4 @@ function createNoteElement(note) {
         noteContainer.insertBefore(msg, noteDate);
     }
     return noteWrapper;
-}
-
-function deleteNote(uid) {
-
-    console.log("deleting note " + uid);
-
-    const notes = loadNotes();
-    const result = notes.filter(note => note.uid !== uid);
-
-    // for (let i = 0; i < notes.length; i++) {
-    //     if (notes[i].uid === uid) {
-    //         notes.splice(i, 1);
-    //         break;
-    //     }
-    // }
-
-    const jsonNotesArray = JSON.stringify(result);
-    localStorage.setItem("notes", jsonNotesArray);
-    displayNotes();
-}
-
-
-//========Task==========
-
-function saveTask() {
-    if (!isFormValid()) {
-        return;
-    }
-    const task = createTask();
-    clearForm();
-    saveNotes(task);
-    displayNewNote(task);
-}
-
-function createTask() {
-    const taskMetadata = setTaskMetadata();
-    const task = {
-        "timestamp": taskMetadata.timestamp,
-        "uid": taskMetadata.uid,
-        "details": detailsBox.value,
-        "date": dateBox.value,
-        "time": timeBox.value,
-        "expired": false,
-    }
-    return task;
-}
-
-function setTaskMetadata() {
-    const timestamp = Date.now();
-    const uid = generateTaskUID(timestamp);
-    const metadata = {
-        "timestamp": timestamp,
-        "uid": uid,
-    }
-    return metadata;
-}
-
-
-function generateTaskUID(timestamp) {
-    /** 
-     * this uid should be unique enough for this application's purposes
-     * but consider adding extra validation of uniqueness if time permits
-     * */
-    const rand = Math.floor(Math.random() * 90000) + 10000;
-    const uid = `${timestamp}_${rand}`;
-    return uid;
 }
