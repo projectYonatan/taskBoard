@@ -7,7 +7,35 @@ function initializePage() {
     displayAllNotes();
 }
 
-//========Form==========
+//======== Task ==========
+
+function saveTask() {
+    if (!isFormValid()) return;
+    clearForm();
+    const task = createTaskObject();
+    addNewNote(task);
+}
+
+function createTaskObject() {
+    const timestamp = Date.now();
+    const uid = generateTaskUID(timestamp);
+    return {
+        "timestamp": timestamp,
+        "uid": uid,
+        "details": detailsBox.value,
+        "date": dateBox.value,
+        "time": timeBox.value,
+        "expired": false,
+    }
+}
+
+/** append 5-digit randon int to epoch timestamp */
+function generateTaskUID(timestamp) {
+    const rand = Math.floor(Math.random() * 90000) + 10000;
+    return `${timestamp}_${rand}`;
+}
+
+//======== Form ==========
 
 function isFormValid() {
     if (detailsBox.value === "") {
@@ -46,20 +74,6 @@ function clearForm() {
     detailsBox.value = "";
     dateBox.value = "";
     timeBox.value = "";
-    // cosmetic hack for browsers that don't show time/date inputs
-    formPlaceholders();
-}
-
-function formPlaceholders() {
-    // set placeholders for date/time form inputs
-    // can also be rewritten to set default form date/time values...
-    const now = new Date();
-    const hourFromNow = new Date(now);
-    hourFromNow.setHours(now.getHours() + 1);
-    const date = hourFromNow.toISOString().slice(0, 10);
-    const time = hourFromNow.toTimeString().slice(0, 5);
-    dateBox.placeholder = date;
-    timeBox.placeholder = time;
 }
 
 //======== Notes Storage ==========
@@ -207,34 +221,4 @@ function createNoteElement(note) {
         noteContainer.insertBefore(msg, noteDate);
     }
     return noteWrapper;
-}
-
-//========Task==========
-
-function saveTask() {
-    if (!isFormValid()) {
-        return;
-    }
-    const task = createTaskObject();
-    clearForm();
-    addNewNote(task);
-}
-
-function createTaskObject() {
-    const timestamp = Date.now();
-    const uid = generateTaskUID(timestamp);
-    return {
-        "timestamp": timestamp,
-        "uid": uid,
-        "details": detailsBox.value,
-        "date": dateBox.value,
-        "time": timeBox.value,
-        "expired": false,
-    }
-}
-
-/** append 5-digit randon int to epoch timestamp */
-function generateTaskUID(timestamp) {
-    const rand = Math.floor(Math.random() * 90000) + 10000;
-    return `${timestamp}_${rand}`;
 }
