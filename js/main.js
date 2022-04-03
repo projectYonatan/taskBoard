@@ -11,9 +11,9 @@ function initializePage() {
 
 function saveTask() {
     if (!isFormValid()) return;
-    clearForm();
     const task = createTaskObject();
     addNewNote(task);
+    clearForm();
 }
 
 function createTaskObject() {
