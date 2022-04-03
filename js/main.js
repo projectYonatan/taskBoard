@@ -4,7 +4,7 @@ const timeBox = document.getElementById("timeBox");
 
 function initializePage() {
     clearForm();
-    displayNotes();
+    displayAllNotes();
 }
 
 //========Form==========
@@ -62,12 +62,7 @@ function formPlaceholders() {
     timeBox.placeholder = time;
 }
 
-//========Notes==========
-
-function logNotes() { // for debugging
-    const notes = loadNotes();
-    console.log(notes);
-}
+//======== Notes Storage ==========
 
 function isNoteExpired(note) {
     const nowDate = Date.now();
@@ -79,43 +74,43 @@ function setNoteExpired(note) {
     note.expired = isNoteExpired(note);
 }
 
-function loadNotes() {
+function loadAllNotes() {
     const jsonNotesArray = localStorage.getItem("notes") === null ? "[]" : localStorage.getItem("notes");
     const notes = JSON.parse(jsonNotesArray);
     notes.forEach(note => setNoteExpired(note)); // mark expired notes
     return notes;
 }
 
-function saveNewNote(task) {
-    const notes = loadNotes();
-    notes.push(task);
+function saveAllNotes(notes) {
     const jsonNotesArray = JSON.stringify(notes);
     localStorage.setItem("notes", jsonNotesArray);
 }
 
-function deleteNote(uid) {
-
-    console.log("deleting note " + uid); // for debugging
-
-    const notes = loadNotes();
-    const result = notes.filter(note => note.uid !== uid);
-
-    // for (let i = 0; i < notes.length; i++) {
-    //     if (notes[i].uid === uid) {
-    //         notes.splice(i, 1);
-    //         break;
-    //     }
-    // }
-
-    const jsonNotesArray = JSON.stringify(result);
-    localStorage.setItem("notes", jsonNotesArray);
-    displayNotes();
-}
-
 function deleteAllNotes() {
+    console.log("deleting all notes"); // for debugging
     localStorage.removeItem("notes");
-    displayNotes();
+    displayAllNotes();
 }
+
+function addNewNote(task) {
+    console.log("adding note " + task.uid); // for debugging
+    const notes = loadAllNotes();
+    task.isNew = true; // temp prop for new note, delete in displayNewNote()
+    notes.push(task);
+    saveAllNotes(notes);
+    // displayNewNote(task);
+    displayAllNotes();
+}
+
+function deleteNote(uid) {
+    console.log("deleting note " + uid); // for debugging
+    const notes = loadAllNotes();
+    const result = notes.filter(note => note.uid !== uid);
+    saveAllNotes(result);
+    displayAllNotes();
+}
+
+//======== Notes Display ==========
 
 function showNoteDeleteButton(noteId) {
     noteWrapper = document.getElementById(noteId);
@@ -144,29 +139,32 @@ function displayNewNote(note) {
     const noteWrapper = createNoteElement(note);
     noteWrapper.classList.add("faded-out");
     notesAllWrapper.append(noteWrapper);
-    // notesAllWrapper.prepend(noteWrapper);
     fadeInNote(noteWrapper);
-    // noteWrapper.scrollIntoView(true);
     noteWrapper.scrollIntoView({
         behavior: 'smooth'
     });
-    logNotes(); //for debugging
+    delete note.isNew;
 }
 
-function displayNotes() {
-    let notes = loadNotes();
+function displayAllNotes() {
+    let notes = loadAllNotes();
+    console.log("all notes in localStorage:"); // for debugging
     console.log(notes); // for debugging
 
-    // filter expired notes before display, uncomment to display all notes
-    notes = notes.filter(note => !isNoteExpired(note));
+    notes = notes.filter(note => !isNoteExpired(note)); // filter out expired notes
 
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     notesAllWrapper.innerHTML = "";
 
     for (let note of notes) {
-        const noteWrapper = createNoteElement(note);
-        notesAllWrapper.append(noteWrapper);
+        if (note.isNew) {
+            displayNewNote(note);
+        } else {
+            const noteWrapper = createNoteElement(note);
+            notesAllWrapper.append(noteWrapper);
+        }
     }
+    saveAllNotes(notes);
 }
 
 function createNoteElement(note) {
@@ -225,8 +223,7 @@ function saveTask() {
     }
     const task = createTaskObject();
     clearForm();
-    saveNewNote(task);
-    displayNewNote(task);
+    addNewNote(task);
 }
 
 function createTaskObject() {
