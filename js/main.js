@@ -38,17 +38,40 @@ function generateTaskUID(timestamp) {
 
 //======== Form ==========
 
+function clearForm() {
+    detailsBox.value = "";
+    dateBox.value = "";
+    timeBox.value = "";
+    clearFormErrors();
+}
+
+function deleteAllNotes() {
+    deleteAllNotesFromStorage();
+    clearForm();
+}
+
+function isExpiredHidden() {
+    const isExpiredHidden = !!+document.getElementById("isExpiredHiddenBox").value;
+    console.log(`Expired notes are hidden: ${isExpiredHidden}`); // for debugging
+    return isExpiredHidden;
+}
+
+function resetIsExpiredHidden() {
+    const isExpiredHiddenBox = document.getElementById("isExpiredHiddenBox");
+    isExpiredHiddenBox.value = "1";
+}
+
 function isFormValid() {
     if (detailsBox.value === "") {
-        showFormError("details");
+        showFormError("details", "missing");
         return false;
     }
     if (dateBox.value === "") {
-        showFormError("date");
+        showFormError("date", "missing");
         return false;
     }
     if (timeBox.value === "") {
-        showFormError("time");
+        showFormError("time", "missing");
         return false;
     }
     if (!isFormDateValid()) {
@@ -58,23 +81,58 @@ function isFormValid() {
 }
 
 function isFormDateValid() {
-    const nowDate = Date.now();
-    const noteDate = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
-    if (nowDate > noteDate) {
-        alert("date and time must be in the future");
+    const nowDateTime = Date.now();
+    const noteDateTime = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
+    if (nowDateTime > noteDateTime) {
+        showFormError("time", "/ date invalid");
         return false;
     }
     return true;
 }
 
-function showFormError(msg) {
-    alert(`Please fill task ${msg}`);
+function clearFormErrors() {
+    detailsBox.style.backgroundColor = "";
+    dateBox.style.backgroundColor = "";
+    timeBox.style.backgroundColor = "";
+    const msgElements = document.querySelectorAll(".form-error");
+    for (const msgElement of msgElements) {
+        createCssOpacityTransition(msgElement, 0, 0.4);
+    }
 }
 
-function clearForm() {
-    detailsBox.value = "";
-    dateBox.value = "";
-    timeBox.value = "";
+function showFormError(input, msg) {
+    const errorMsg = `Task ${input} ${msg}`;
+    const ele = document.getElementById(`${input}Box`);
+    ele.style.backgroundColor = "rgba(192, 0, 0, 0.25)";
+    const formContainer = document.getElementById("form-container")
+    const errorMsgElement = document.createElement("div");
+    errorMsgElement.id = `form-error-${input}`;
+    errorMsgElement.classList.add("form-error", "faded-out");
+    errorMsgElement.innerHTML = errorMsg;
+    formContainer.appendChild(errorMsgElement);
+    createCssOpacityTransition(errorMsgElement, 1, 0.5);
+    ele.addEventListener("click", (event) => {
+        event.target.style.backgroundColor = "";
+        createCssOpacityTransition(errorMsgElement, 0, 0.4);
+        // formContainer.removeChild(errorMsgElement);
+    }, {
+        once: true
+    });
+}
+
+/**
+ * Create CSS opacity transition
+ * @param {Element} ele 
+ * @param {number} opacity (between 0 and 1)
+ * @param {number} duration (in seconds)
+ */
+function createCssOpacityTransition(ele, opacity, duration) {
+    if (opacity < 0) opacity = 0;
+    if (opacity > 1) opacity = 1;
+    window.setTimeout(() => {
+        ele.style.opacity = `${opacity}`;
+        ele.style.transition = `opacity ${duration}s ease-out`;
+    }, 40)
 }
 
 //======== Notes Storage ==========
@@ -101,7 +159,7 @@ function saveAllNotes(notes) {
     localStorage.setItem("notes", jsonNotesArray);
 }
 
-function deleteAllNotes() {
+function deleteAllNotesFromStorage() {
     console.log("deleting all notes"); // for debugging
     localStorage.removeItem("notes");
     displayAllNotes();
@@ -134,17 +192,6 @@ function logAllNotes() { // for debugging
 }
 
 //======== Notes Display ==========
-
-function isExpiredHidden() {
-    const isExpiredHidden = !!+document.getElementById("isExpiredHiddenBox").value;
-    console.log(`Expired notes are hidden: ${isExpiredHidden}`); // for debugging
-    return isExpiredHidden;
-}
-
-function resetIsExpiredHidden() {
-    const isExpiredHiddenBox = document.getElementById("isExpiredHiddenBox");
-    isExpiredHiddenBox.value = "1";
-}
 
 function fadeInNote(noteWrapper) {
     window.setTimeout(() => {
