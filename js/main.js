@@ -87,7 +87,7 @@ function isFormValid() {
 
 function isFormDateValid() {
     const nowJustDate = new Date().setHours(0, 0, 0, 0);
-    const formJustDate = new Date(`${dateBox.value} ${timeBox.value}`).setHours(0, 0, 0, 0);
+    const formJustDate = new Date(`${dateBox.value}`).setHours(0, 0, 0, 0);
     return formJustDate >= nowJustDate;
 }
 
