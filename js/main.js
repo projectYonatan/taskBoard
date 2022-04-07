@@ -42,12 +42,12 @@ function clearForm() {
     detailsBox.value = "";
     dateBox.value = "";
     timeBox.value = "";
-    clearFormErrors();
+    clearAllFormErrors();
 }
 
 function deleteAllNotes() {
     deleteAllNotesFromStorage();
-    clearForm();
+    initializePage();
 }
 
 function isExpiredHidden() {
@@ -70,40 +70,54 @@ function isFormValid() {
         showFormError("date", "missing");
         return false;
     }
+    if (!isFormDateValid()) {
+        showFormError("date", "invalid");
+        return false;
+    }
     if (timeBox.value === "") {
         showFormError("time", "missing");
         return false;
     }
-    if (!isFormDateValid()) {
+    if (!isFormDateTimeValid()) {
+        showFormError("time", "invalid");
         return false;
     }
     return true;
 }
 
 function isFormDateValid() {
-    const nowDateTime = Date.now();
-    const noteDateTime = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
-    if (nowDateTime > noteDateTime) {
-        showFormError("time", "/ date invalid");
-        return false;
-    }
-    return true;
+    const nowJustDate = new Date().setHours(0, 0, 0, 0);
+    const formJustDate = new Date(`${dateBox.value} ${timeBox.value}`).setHours(0, 0, 0, 0);
+    return formJustDate >= nowJustDate;
 }
 
-function clearFormErrors() {
-    detailsBox.style.backgroundColor = "";
-    dateBox.style.backgroundColor = "";
-    timeBox.style.backgroundColor = "";
-    const msgElements = document.querySelectorAll(".form-error");
-    for (const msgElement of msgElements) {
-        createCssOpacityTransition(msgElement, 0, 0.4);
+function isFormDateTimeValid() {
+    const nowDateTime = Date.now();
+    const formDateTime = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
+    return formDateTime > nowDateTime;
+}
+
+function clearAllFormErrors() {
+    const inputs = ["details", "date", "time"];
+    inputs.forEach(clearFormError);
+}
+
+function clearFormError(input) {
+    const formInputElement = document.getElementById(`${input}Box`);
+    const errorMsgElement = document.getElementById(`form-error-${input}`);
+    formInputElement.style.backgroundColor = "";
+    if (errorMsgElement) {
+        createCssOpacityTransition(errorMsgElement, 0, 0.4);
+        window.setTimeout(() => {
+            errorMsgElement.remove();
+        }, 500)
     }
 }
 
 function showFormError(input, msg) {
     const errorMsg = `Task ${input} ${msg}`;
-    const ele = document.getElementById(`${input}Box`);
-    ele.style.backgroundColor = "rgba(192, 0, 0, 0.25)";
+    const formInputElement = document.getElementById(`${input}Box`);
+    formInputElement.style.backgroundColor = "rgba(192, 0, 0, 0.25)";
     const formContainer = document.getElementById("form-container")
     const errorMsgElement = document.createElement("div");
     errorMsgElement.id = `form-error-${input}`;
@@ -111,27 +125,31 @@ function showFormError(input, msg) {
     errorMsgElement.innerHTML = errorMsg;
     formContainer.appendChild(errorMsgElement);
     createCssOpacityTransition(errorMsgElement, 1, 0.5);
-    ele.addEventListener("click", (event) => {
-        event.target.style.backgroundColor = "";
-        createCssOpacityTransition(errorMsgElement, 0, 0.4);
-        // formContainer.removeChild(errorMsgElement);
-    }, {
+    // formInputElement.addEventListener("click", (_event) => {
+    //     // event.target.style.backgroundColor = "";
+    //     // clearFormError(input);
+    //     clearAllFormErrors();
+    // }, {
+    //     once: true
+    // });
+    const formInputs = document.querySelectorAll("input,textarea,label");
+    formInputs.forEach(formInput => formInput.addEventListener("click", clearAllFormErrors, {
         once: true
-    });
+    }));
 }
 
 /**
  * Create CSS opacity transition
- * @param {Element} ele 
+ * @param {Element} formInputElement 
  * @param {number} opacity (between 0 and 1)
  * @param {number} duration (in seconds)
  */
-function createCssOpacityTransition(ele, opacity, duration) {
+function createCssOpacityTransition(formInputElement, opacity, duration) {
     if (opacity < 0) opacity = 0;
     if (opacity > 1) opacity = 1;
     window.setTimeout(() => {
-        ele.style.opacity = `${opacity}`;
-        ele.style.transition = `opacity ${duration}s ease-out`;
+        formInputElement.style.opacity = `${opacity}`;
+        formInputElement.style.transition = `opacity ${duration}s ease-out`;
     }, 40)
 }
 
@@ -150,7 +168,7 @@ function setNoteExpired(note) {
 function loadAllNotes() {
     const jsonNotesArray = localStorage.getItem("notes") === null ? "[]" : localStorage.getItem("notes");
     const notes = JSON.parse(jsonNotesArray);
-    notes.forEach(note => setNoteExpired(note)); // mark expired notes
+    notes.forEach(setNoteExpired); // mark expired notes
     return notes;
 }
 
@@ -162,8 +180,6 @@ function saveAllNotes(notes) {
 function deleteAllNotesFromStorage() {
     console.log("deleting all notes"); // for debugging
     localStorage.removeItem("notes");
-    displayAllNotes();
-    logAllNotes(); // for debugging
 }
 
 function addNewNote(task) {
