@@ -281,11 +281,13 @@ function createNoteElement(note) {
     }
 
     if (note.expired === true) { // in case we want to see expired notes unfiltered
-        noteContainer.classList.add("note-expired");
+        // noteContainer.classList.add("note-expired");
         const msg = document.createElement("div");
+        msg.classList.add("note-expired");
         msg.innerHTML = "EXPIRED";
         // noteContainer.insertBefore(msg, noteDate);
-        noteContainer.insertBefore(msg, noteDetails);
+        // noteContainer.insertBefore(msg, noteDetails);
+        noteContainer.append(msg);
     }
     return noteWrapper;
 }

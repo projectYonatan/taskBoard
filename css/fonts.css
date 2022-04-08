@@ -87,3 +87,22 @@
     font-style: normal;
     font-display: swap;
 }
+
+@font-face {
+    font-family: 'Hack';
+    src: url('../fonts/hack-regular.woff2') format('woff2'),
+        url('../fonts/hack-regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'DejaVu';
+    src: url('../fonts/dejavu-sans-webfont.woff2') format('woff2'),
+        url('../fonts/dejavu-sans-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+
+}
