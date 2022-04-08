@@ -15,8 +15,8 @@ html {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding: 1rem;
-    padding-top: .5rem;
+    padding: 0.5rem 1rem;
+    /* padding-top: .25rem; */
     /* display: grid; */
     /* justify-items: center; */
 }
@@ -24,7 +24,6 @@ html {
 #header {
     display: flex;
     justify-content: center;
-    /* font-family: "permanent_markerregular", sans-serif; */
     font-family: "mansalvaregular", sans-serif;
     font-size: 3rem;
     /* background-color: green; */
@@ -51,11 +50,16 @@ html {
     width: 600px;
     height: 212px;
     padding: .4rem;
+    position: relative;
 }
 
 #form-container label {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: baseline;
     color: gray;
-    font-family: monospace;
+    font-family: 'roboto_monoregular', monospace;
+    font-size: small;
 }
 
 #detailsBox,
@@ -63,7 +67,6 @@ html {
 #timeBox {
     box-sizing: border-box;
     background-color: rgba(255, 255, 255, 0.05);
-    /* box-shadow: 0px 0px 25px 5px rgba(235, 235, 235, 0.5); */
     border: 0;
     outline: 0;
 }
@@ -74,14 +77,29 @@ html {
     padding: .2rem;
     width: 75%;
     height: 6rem;
-    font-size: .9rem;
     line-height: 2rem;
+    font-family: 'roboto_monoregular', monospace;
+    font-size: .875rem;
 }
 
 #dateBox,
 #timeBox {
     padding: .2rem;
     margin-bottom: .2rem;
+    font-family: 'Hack', monospace;
+    font-size: .8rem;
+}
+
+button,
+select,
+option {
+    /* font-family: 'comic_neueregular', monospace; */
+    /* font-family: 'roboto_monoregular', monospace; */
+    /* font-family: 'DejaVu', sans-serif; */
+    /* font-family: 'Hack', monospace; */
+    /* font-size: 0.8rem; */
+    font-family: 'Arial', sans-serif;
+    font-size: 0.825rem;
 }
 
 #buttons-container {
@@ -137,7 +155,8 @@ html {
 
 .note-details {
     box-sizing: border-box;
-    margin: 1rem 0 1.2rem 0;
+    /* margin: 1rem 0 1.2rem 0; */
+    margin: 0.6rem 0 2.2rem 0;
     width: 97%;
     height: 65%;
     overflow-x: auto;
@@ -161,12 +180,10 @@ html {
 
 .note-date,
 .note-time {
-    /* font-family: 'unica_oneregular', cursive; */
-    /* font-family: 'special_eliteregular', cursive; */
-    /* font-family: 'roboto_monoregular', monospace; */
-    /* font-family: 'caveat_brushregular', monospace; */
-    font-family: 'comic_neueregular', monospace;
-    font-size: .9rem;
+    /* font-family: 'comic_neueregular', monospace; */
+    /* font-size: .9rem; */
+    font-family: 'Hack', monospace;
+    font-size: .775rem;
     padding-top: .15rem;
     color: rgb(32, 32, 32, 0.9);
     text-shadow: 0 0 1px rgba(32, 32, 32, 0.5);
@@ -189,7 +206,15 @@ html {
 }
 
 .note-expired {
-    color: red;
+    font-family: "permanent_markerregular", sans-serif;
+    font-size: 1rem;
+    padding-left: 0.4rem;
+    margin: 0 -0.3rem;
+    color: rgba(255, 0, 0, 0.5);
+    background-color: rgba(192, 0, 0, 0.25);
+    /* z-index: 1; */
+    /* transform: rotate(135deg) scale(-1) translate(50%, -200%); */
+    transform: translate(0, -3.8rem);
 }
 
 /* Transitions */
@@ -212,4 +237,42 @@ html {
 .faded-in-quick {
     opacity: 1;
     transition: opacity 0.5s ease-out;
+}
+
+/* Error messages */
+
+.form-error {
+    z-index: 2;
+    color: white;
+    background-color: rgba(192, 0, 0, 0.66);
+    border: 4px solid rgba(225, 32, 64, 0.33);
+    border-radius: 8px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'roboto_monoregular', monospace;
+    font-size: .8rem;
+}
+
+#form-error-details {
+    background-color: rgba(192, 0, 0, 0.5);
+    width: 72%;
+    height: 18px;
+    top: 82px;
+    right: 82px;
+}
+
+#form-error-date {
+    width: 160px;
+    height: 18px;
+    top: 118px;
+    right: 18px;
+}
+
+#form-error-time {
+    width: 160px;
+    height: 18px;
+    top: 150px;
+    right: 18px;
 }

@@ -4,6 +4,7 @@ const timeBox = document.getElementById("timeBox");
 
 function initializePage() {
     clearForm();
+    resetIsExpiredHidden(); // always hide expired notes on page refresh
     displayAllNotes();
     logAllNotes(); // for debugging
 }
@@ -37,43 +38,119 @@ function generateTaskUID(timestamp) {
 
 //======== Form ==========
 
+function clearForm() {
+    detailsBox.value = "";
+    dateBox.value = "";
+    timeBox.value = "";
+    clearAllFormErrors();
+}
+
+function deleteAllNotes() {
+    deleteAllNotesFromStorage();
+    initializePage();
+}
+
+function isExpiredHidden() {
+    const isExpiredHidden = !!+document.getElementById("isExpiredHiddenBox").value;
+    console.log(`Expired notes are hidden: ${isExpiredHidden}`); // for debugging
+    return isExpiredHidden;
+}
+
+function resetIsExpiredHidden() {
+    const isExpiredHiddenBox = document.getElementById("isExpiredHiddenBox");
+    isExpiredHiddenBox.value = "1";
+}
+
 function isFormValid() {
     if (detailsBox.value === "") {
-        showFormError("details");
+        showFormError("details", "missing");
         return false;
     }
     if (dateBox.value === "") {
-        showFormError("date");
-        return false;
-    }
-    if (timeBox.value === "") {
-        showFormError("time");
+        showFormError("date", "missing");
         return false;
     }
     if (!isFormDateValid()) {
+        showFormError("date", "invalid");
+        return false;
+    }
+    if (timeBox.value === "") {
+        showFormError("time", "missing");
+        return false;
+    }
+    if (!isFormDateTimeValid()) {
+        showFormError("time", "invalid");
         return false;
     }
     return true;
 }
 
 function isFormDateValid() {
-    const nowDate = Date.now();
-    const noteDate = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
-    if (nowDate > noteDate) {
-        alert("date and time must be in the future");
-        return false;
+    const nowJustDate = new Date().setHours(0, 0, 0, 0);
+    const formJustDate = new Date(`${dateBox.value}`).setHours(0, 0, 0, 0);
+    return formJustDate >= nowJustDate;
+}
+
+function isFormDateTimeValid() {
+    const nowDateTime = Date.now();
+    const formDateTime = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
+    return formDateTime > nowDateTime;
+}
+
+function clearAllFormErrors() {
+    const inputs = ["details", "date", "time"];
+    inputs.forEach(clearFormError);
+}
+
+function clearFormError(input) {
+    const formInputElement = document.getElementById(`${input}Box`);
+    const errorMsgElement = document.getElementById(`form-error-${input}`);
+    formInputElement.style.backgroundColor = "";
+    if (errorMsgElement) {
+        createCssOpacityTransition(errorMsgElement, 0, 0.4);
+        window.setTimeout(() => {
+            errorMsgElement.remove();
+        }, 500)
     }
-    return true;
 }
 
-function showFormError(msg) {
-    alert(`Please fill task ${msg}`);
+function showFormError(input, msg) {
+    const errorMsg = `Task ${input} ${msg}`;
+    const formInputElement = document.getElementById(`${input}Box`);
+    formInputElement.style.backgroundColor = "rgba(192, 0, 0, 0.25)";
+    const formContainer = document.getElementById("form-container")
+    const errorMsgElement = document.createElement("div");
+    errorMsgElement.id = `form-error-${input}`;
+    errorMsgElement.classList.add("form-error", "faded-out");
+    errorMsgElement.innerHTML = errorMsg;
+    formContainer.appendChild(errorMsgElement);
+    createCssOpacityTransition(errorMsgElement, 1, 0.5);
+    // formInputElement.addEventListener("click", (_event) => {
+    //     // event.target.style.backgroundColor = "";
+    //     // clearFormError(input);
+    //     clearAllFormErrors();
+    // }, {
+    //     once: true
+    // });
+    const formInputs = document.querySelectorAll("input,textarea,label");
+    formInputs.forEach(formInput => formInput.addEventListener("click", clearAllFormErrors, {
+        once: true
+    }));
 }
 
-function clearForm() {
-    detailsBox.value = "";
-    dateBox.value = "";
-    timeBox.value = "";
+/**
+ * Create CSS opacity transition
+ * @param {Element} formInputElement 
+ * @param {number} opacity (between 0 and 1)
+ * @param {number} duration (in seconds)
+ */
+function createCssOpacityTransition(formInputElement, opacity, duration) {
+    if (opacity < 0) opacity = 0;
+    if (opacity > 1) opacity = 1;
+    window.setTimeout(() => {
+        formInputElement.style.opacity = `${opacity}`;
+        formInputElement.style.transition = `opacity ${duration}s ease-out`;
+    }, 40)
 }
 
 //======== Notes Storage ==========
@@ -91,7 +168,7 @@ function setNoteExpired(note) {
 function loadAllNotes() {
     const jsonNotesArray = localStorage.getItem("notes") === null ? "[]" : localStorage.getItem("notes");
     const notes = JSON.parse(jsonNotesArray);
-    notes.forEach(note => setNoteExpired(note)); // mark expired notes
+    notes.forEach(setNoteExpired); // mark expired notes
     return notes;
 }
 
@@ -100,11 +177,9 @@ function saveAllNotes(notes) {
     localStorage.setItem("notes", jsonNotesArray);
 }
 
-function deleteAllNotes() {
+function deleteAllNotesFromStorage() {
     console.log("deleting all notes"); // for debugging
     localStorage.removeItem("notes");
-    displayAllNotes();
-    logAllNotes(); // for debugging
 }
 
 function addNewNote(task) {
@@ -134,21 +209,6 @@ function logAllNotes() { // for debugging
 
 //======== Notes Display ==========
 
-function showNoteDeleteButton(noteId) {
-    noteWrapper = document.getElementById(noteId);
-    noteDelete = noteWrapper.querySelector(".note-delete");
-    noteDelete.classList.remove("faded-out-quick");
-    noteDelete.classList.add("faded-in-quick");
-
-}
-
-function hideNoteDeleteButton(noteId) {
-    noteWrapper = document.getElementById(noteId);
-    noteDelete = noteWrapper.querySelector(".note-delete");
-    noteDelete.classList.remove("faded-in-quick");
-    noteDelete.classList.add("faded-out-quick");
-}
-
 function fadeInNote(noteWrapper) {
     window.setTimeout(() => {
         noteWrapper.classList.remove("faded-out");
@@ -169,8 +229,9 @@ function displayNewNote(note) {
 
 function displayAllNotes() {
     let notes = loadAllNotes();
-
-    notes = notes.filter(note => !(note.expired)); // filter out expired notes
+    if (isExpiredHidden()) {
+        notes = notes.filter(note => !(note.expired)); // filter out expired notes
+    }
 
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     notesAllWrapper.innerHTML = "";
@@ -209,7 +270,6 @@ function createNoteElement(note) {
         }, 40)
     };
 
-
     noteContainer.append(noteDetails, noteDate, noteTime);
     noteWrapper.append(noteDelete, noteContainer);
 
@@ -221,10 +281,28 @@ function createNoteElement(note) {
     }
 
     if (note.expired === true) { // in case we want to see expired notes unfiltered
-        noteContainer.classList.add("note-expired");
+        // noteContainer.classList.add("note-expired");
         const msg = document.createElement("div");
+        msg.classList.add("note-expired");
         msg.innerHTML = "EXPIRED";
-        noteContainer.insertBefore(msg, noteDate);
+        // noteContainer.insertBefore(msg, noteDate);
+        // noteContainer.insertBefore(msg, noteDetails);
+        noteContainer.append(msg);
     }
     return noteWrapper;
+}
+
+function showNoteDeleteButton(noteId) {
+    noteWrapper = document.getElementById(noteId);
+    noteDelete = noteWrapper.querySelector(".note-delete");
+    noteDelete.classList.remove("faded-out-quick");
+    noteDelete.classList.add("faded-in-quick");
+
+}
+
+function hideNoteDeleteButton(noteId) {
+    noteWrapper = document.getElementById(noteId);
+    noteDelete = noteWrapper.querySelector(".note-delete");
+    noteDelete.classList.remove("faded-in-quick");
+    noteDelete.classList.add("faded-out-quick");
 }
