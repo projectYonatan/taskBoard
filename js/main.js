@@ -1,7 +1,3 @@
-const detailsBox = document.getElementById("detailsBox");
-const dateBox = document.getElementById("dateBox");
-const timeBox = document.getElementById("timeBox");
-
 function initializePage() {
     clearForm();
     resetIsExpiredHidden(); // always hide expired notes on page refresh
@@ -21,9 +17,9 @@ function saveTask() {
 function createTaskObject() {
     return {
         "uid": generateTaskUID(),
-        "details": detailsBox.value,
-        "date": dateBox.value,
-        "time": timeBox.value,
+        "details": document.getElementById("detailsBox").value,
+        "date": document.getElementById("dateBox").value,
+        "time": document.getElementById("timeBox").value,
         "expired": false,
     }
 }
@@ -38,9 +34,9 @@ function generateTaskUID() {
 //======== Form ==========
 
 function clearForm() {
-    detailsBox.value = "";
-    dateBox.value = "";
-    timeBox.value = "";
+    document.getElementById("detailsBox").value = "";
+    document.getElementById("dateBox").value = "";
+    document.getElementById("timeBox").value = "";
     clearAllFormErrors();
 }
 
@@ -61,6 +57,9 @@ function resetIsExpiredHidden() {
 }
 
 function isFormValid() {
+    const detailsBox = document.getElementById("detailsBox");
+    const dateBox = document.getElementById("dateBox");
+    const timeBox = document.getElementById("timeBox");
     if (detailsBox.value === "") {
         showFormError("details", "missing");
         return false;
@@ -69,7 +68,7 @@ function isFormValid() {
         showFormError("date", "missing");
         return false;
     }
-    if (!isFormDateValid()) {
+    if (!isFormDateValid(dateBox)) {
         showFormError("date", "invalid");
         return false;
     }
@@ -77,20 +76,20 @@ function isFormValid() {
         showFormError("time", "missing");
         return false;
     }
-    if (!isFormDateTimeValid()) {
+    if (!isFormDateTimeValid(dateBox, timeBox)) {
         showFormError("time", "invalid");
         return false;
     }
     return true;
 }
 
-function isFormDateValid() {
+function isFormDateValid(dateBox) {
     const nowJustDate = new Date().setHours(0, 0, 0, 0);
     const formJustDate = new Date(`${dateBox.value}`).setHours(0, 0, 0, 0);
     return formJustDate >= nowJustDate;
 }
 
-function isFormDateTimeValid() {
+function isFormDateTimeValid(dateBox, timeBox) {
     const nowDateTime = Date.now();
     const formDateTime = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
     return formDateTime > nowDateTime;
