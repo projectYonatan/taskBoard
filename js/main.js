@@ -1,7 +1,3 @@
-const detailsBox = document.getElementById("detailsBox");
-const dateBox = document.getElementById("dateBox");
-const timeBox = document.getElementById("timeBox");
-
 function initializePage() {
     clearForm();
     resetIsExpiredHidden(); // always hide expired notes on page refresh
@@ -19,19 +15,18 @@ function saveTask() {
 }
 
 function createTaskObject() {
-    const timestamp = Date.now();
     return {
-        "timestamp": timestamp,
-        "uid": generateTaskUID(timestamp),
-        "details": detailsBox.value,
-        "date": dateBox.value,
-        "time": timeBox.value,
+        "uid": generateTaskUID(),
+        "details": document.getElementById("detailsBox").value,
+        "date": document.getElementById("dateBox").value,
+        "time": document.getElementById("timeBox").value,
         "expired": false,
     }
 }
 
 /** append random 5-digit int to epoch timestamp */
-function generateTaskUID(timestamp) {
+function generateTaskUID() {
+    const timestamp = Date.now();
     const rand = Math.floor(Math.random() * 90000) + 10000;
     return `${timestamp}_${rand}`;
 }
@@ -39,9 +34,9 @@ function generateTaskUID(timestamp) {
 //======== Form ==========
 
 function clearForm() {
-    detailsBox.value = "";
-    dateBox.value = "";
-    timeBox.value = "";
+    document.getElementById("detailsBox").value = "";
+    document.getElementById("dateBox").value = "";
+    document.getElementById("timeBox").value = "";
     clearAllFormErrors();
 }
 
@@ -62,6 +57,9 @@ function resetIsExpiredHidden() {
 }
 
 function isFormValid() {
+    const detailsBox = document.getElementById("detailsBox");
+    const dateBox = document.getElementById("dateBox");
+    const timeBox = document.getElementById("timeBox");
     if (detailsBox.value === "") {
         showFormError("details", "missing");
         return false;
@@ -70,7 +68,7 @@ function isFormValid() {
         showFormError("date", "missing");
         return false;
     }
-    if (!isFormDateValid()) {
+    if (!isFormDateValid(dateBox)) {
         showFormError("date", "invalid");
         return false;
     }
@@ -78,20 +76,20 @@ function isFormValid() {
         showFormError("time", "missing");
         return false;
     }
-    if (!isFormDateTimeValid()) {
+    if (!isFormDateTimeValid(dateBox, timeBox)) {
         showFormError("time", "invalid");
         return false;
     }
     return true;
 }
 
-function isFormDateValid() {
+function isFormDateValid(dateBox) {
     const nowJustDate = new Date().setHours(0, 0, 0, 0);
     const formJustDate = new Date(`${dateBox.value}`).setHours(0, 0, 0, 0);
     return formJustDate >= nowJustDate;
 }
 
-function isFormDateTimeValid() {
+function isFormDateTimeValid(dateBox, timeBox) {
     const nowDateTime = Date.now();
     const formDateTime = new Date(`${dateBox.value} ${timeBox.value}`).getTime();
     return formDateTime > nowDateTime;
@@ -125,32 +123,11 @@ function showFormError(input, msg) {
     errorMsgElement.innerHTML = errorMsg;
     formContainer.appendChild(errorMsgElement);
     createCssOpacityTransition(errorMsgElement, 1, 0.5);
-    // formInputElement.addEventListener("click", (_event) => {
-    //     // event.target.style.backgroundColor = "";
-    //     // clearFormError(input);
-    //     clearAllFormErrors();
-    // }, {
-    //     once: true
-    // });
+
     const formInputs = document.querySelectorAll("input,textarea,label");
     formInputs.forEach(formInput => formInput.addEventListener("click", clearAllFormErrors, {
         once: true
     }));
-}
-
-/**
- * Create CSS opacity transition
- * @param {Element} formInputElement 
- * @param {number} opacity (between 0 and 1)
- * @param {number} duration (in seconds)
- */
-function createCssOpacityTransition(formInputElement, opacity, duration) {
-    if (opacity < 0) opacity = 0;
-    if (opacity > 1) opacity = 1;
-    window.setTimeout(() => {
-        formInputElement.style.opacity = `${opacity}`;
-        formInputElement.style.transition = `opacity ${duration}s ease-out`;
-    }, 40)
 }
 
 //======== Notes Storage ==========
@@ -209,19 +186,13 @@ function logAllNotes() { // for debugging
 
 //======== Notes Display ==========
 
-function fadeInNote(noteWrapper) {
-    window.setTimeout(() => {
-        noteWrapper.classList.remove("faded-out");
-        noteWrapper.classList.add("faded-in");
-    }, 40)
-}
-
 function displayNewNote(note) {
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     const noteWrapper = createNoteElement(note);
     noteWrapper.classList.add("faded-out");
     notesAllWrapper.append(noteWrapper);
-    fadeInNote(noteWrapper);
+    // fadeInNote(noteWrapper);
+    createCssOpacityTransition(noteWrapper, 1, 2)
     noteWrapper.scrollIntoView({
         behavior: 'smooth'
     });
@@ -242,6 +213,8 @@ function displayAllNotes() {
     }
 }
 
+//======== Notes Elements Creation ==========
+
 function createNoteElement(note) {
     const noteWrapper = document.createElement("div");
     const noteContainer = document.createElement("div");
@@ -260,15 +233,7 @@ function createNoteElement(note) {
     noteDate.innerHTML = note.date;
     noteTime.innerHTML = note.time;
 
-    const noteDelete = document.createElement("span");
-    noteDelete.className = "note-delete";
-    noteDelete.classList.add("faded-out-quick", "bi-x-square-fill");
-
-    noteDelete.onclick = function() {
-        window.setTimeout(() => {
-            deleteNote(note.uid)
-        }, 40)
-    };
+    const noteDelete = createNoteDeleteButton(note);
 
     noteContainer.append(noteDetails, noteDate, noteTime);
     noteWrapper.append(noteDelete, noteContainer);
@@ -280,16 +245,22 @@ function createNoteElement(note) {
         hideNoteDeleteButton(noteWrapper.id);
     }
 
-    if (note.expired === true) { // in case we want to see expired notes unfiltered
-        // noteContainer.classList.add("note-expired");
-        const msg = document.createElement("div");
-        msg.classList.add("note-expired");
-        msg.innerHTML = "EXPIRED";
-        // noteContainer.insertBefore(msg, noteDate);
-        // noteContainer.insertBefore(msg, noteDetails);
-        noteContainer.append(msg);
-    }
+    if (note.expired) noteContainer.append(createNoteExpiredMsg());
+
     return noteWrapper;
+}
+
+function createNoteDeleteButton(note) {
+    const noteDelete = document.createElement("span");
+    noteDelete.className = "note-delete";
+    noteDelete.classList.add("faded-out-quick", "bi-x-square-fill");
+
+    noteDelete.onclick = function() {
+        window.setTimeout(() => {
+            deleteNote(note.uid)
+        }, 40)
+    };
+    return noteDelete;
 }
 
 function showNoteDeleteButton(noteId) {
@@ -305,4 +276,28 @@ function hideNoteDeleteButton(noteId) {
     noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-in-quick");
     noteDelete.classList.add("faded-out-quick");
+}
+
+function createNoteExpiredMsg() {
+    const msg = document.createElement("div");
+    msg.classList.add("note-expired");
+    msg.innerHTML = "EXPIRED";
+    return msg;
+}
+
+//======== Dynamic Transitions ==========
+
+/**
+ * Create CSS opacity transition
+ * @param {Element} ele 
+ * @param {number} opacity (between 0 and 1)
+ * @param {number} duration (in seconds)
+ */
+function createCssOpacityTransition(ele, opacity, duration) {
+    if (opacity < 0) opacity = 0;
+    if (opacity > 1) opacity = 1;
+    window.setTimeout(() => {
+        ele.style.opacity = `${opacity}`;
+        ele.style.transition = `opacity ${duration}s ease-out`;
+    }, 40)
 }
