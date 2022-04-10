@@ -240,6 +240,8 @@ function displayAllNotes() {
     }
 }
 
+//======== Notes Elements Creation ==========
+
 function createNoteElement(note) {
     const noteWrapper = document.createElement("div");
     const noteContainer = document.createElement("div");
@@ -258,15 +260,7 @@ function createNoteElement(note) {
     noteDate.innerHTML = note.date;
     noteTime.innerHTML = note.time;
 
-    const noteDelete = document.createElement("span");
-    noteDelete.className = "note-delete";
-    noteDelete.classList.add("faded-out-quick", "bi-x-square-fill");
-
-    noteDelete.onclick = function() {
-        window.setTimeout(() => {
-            deleteNote(note.uid)
-        }, 40)
-    };
+    const noteDelete = createNoteDeleteButton(note);
 
     noteContainer.append(noteDetails, noteDate, noteTime);
     noteWrapper.append(noteDelete, noteContainer);
@@ -278,16 +272,22 @@ function createNoteElement(note) {
         hideNoteDeleteButton(noteWrapper.id);
     }
 
-    if (note.expired === true) { // in case we want to see expired notes unfiltered
-        // noteContainer.classList.add("note-expired");
-        const msg = document.createElement("div");
-        msg.classList.add("note-expired");
-        msg.innerHTML = "EXPIRED";
-        // noteContainer.insertBefore(msg, noteDate);
-        // noteContainer.insertBefore(msg, noteDetails);
-        noteContainer.append(msg);
-    }
+    if (note.expired) noteContainer.append(createNoteExpiredMsg());
+
     return noteWrapper;
+}
+
+function createNoteDeleteButton(note) {
+    const noteDelete = document.createElement("span");
+    noteDelete.className = "note-delete";
+    noteDelete.classList.add("faded-out-quick", "bi-x-square-fill");
+
+    noteDelete.onclick = function() {
+        window.setTimeout(() => {
+            deleteNote(note.uid)
+        }, 40)
+    };
+    return noteDelete;
 }
 
 function showNoteDeleteButton(noteId) {
@@ -303,4 +303,11 @@ function hideNoteDeleteButton(noteId) {
     noteDelete = noteWrapper.querySelector(".note-delete");
     noteDelete.classList.remove("faded-in-quick");
     noteDelete.classList.add("faded-out-quick");
+}
+
+function createNoteExpiredMsg() {
+    const msg = document.createElement("div");
+    msg.classList.add("note-expired");
+    msg.innerHTML = "EXPIRED";
+    return msg;
 }
