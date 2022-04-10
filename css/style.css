@@ -48,8 +48,6 @@ html {
     width: 100%;
     height: 100%;
     padding: 0.5rem 1rem;
-    /* display: grid; */
-    /* justify-items: center; */
 }
 
 #header {
@@ -58,17 +56,13 @@ html {
     font-family: "Mansalva", cursive;
     font-size: 3rem;
     margin-bottom: 0.25rem;
-    /* background-color: green; */
 }
 
 #form-wrapper {
     box-sizing: border-box;
     display: flex;
     justify-content: center;
-    /* margin-bottom: .5rem; */
     margin: .25rem 0;
-    /* align-content: space-around; */
-    /* width: 75vw; */
 }
 
 #form-container {
@@ -90,6 +84,13 @@ html {
     color: gray;
     font-family: 'Roboto Mono', monospace;
     font-size: small;
+}
+
+#form-container button,
+#form-container select,
+#form-container option {
+    font-family: 'Arial', sans-serif;
+    font-size: 0.8rem;
 }
 
 #detailsBox,
@@ -114,17 +115,10 @@ html {
 
 #dateBox,
 #timeBox {
-    padding: .2rem;
     margin-bottom: .2rem;
+    padding: .2rem;
     font-family: 'Hack', monospace;
     font-size: .8rem;
-}
-
-button,
-select,
-option {
-    font-family: 'Arial', sans-serif;
-    font-size: 0.8rem;
 }
 
 #buttons-container {
@@ -136,7 +130,6 @@ option {
     justify-content: center;
     margin: .5rem 0;
     overflow-y: hidden;
-    /* background-color: red; */
 }
 
 #noteboard-wrapper:hover {
@@ -145,16 +138,11 @@ option {
 
 #notes-all-wrapper {
     box-sizing: border-box;
-    /* margin: .5rem; */
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     width: 90%;
     padding-left: 1.8rem;
-    /* background-color: red; */
-    /* display: grid; */
-    /* grid-template-rows: 1fr; */
-    /* grid-template-columns: repeat(5, 1fr); */
 }
 
 .note-wrapper {
@@ -179,7 +167,6 @@ option {
 
 .note-details {
     box-sizing: border-box;
-    /* margin: 1rem 0 1.2rem 0; */
     margin: 0.6rem 0 2.2rem 0;
     width: 97%;
     height: 65%;
@@ -224,8 +211,6 @@ option {
     margin: 0 -0.3rem;
     color: rgba(255, 0, 0, 0.5);
     background-color: rgba(192, 0, 0, 0.25);
-    /* z-index: 1; */
-    /* transform: rotate(135deg) scale(-1) translate(50%, -200%); */
     transform: translate(0, -3.8rem);
 }
 
