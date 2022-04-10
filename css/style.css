@@ -233,12 +233,6 @@ option {
 
 .faded-out {
     opacity: 0;
-    transition: opacity 2s ease-out;
-}
-
-.faded-in {
-    opacity: 1;
-    transition: opacity 2s ease-out;
 }
 
 .faded-out-quick {

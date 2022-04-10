@@ -123,32 +123,11 @@ function showFormError(input, msg) {
     errorMsgElement.innerHTML = errorMsg;
     formContainer.appendChild(errorMsgElement);
     createCssOpacityTransition(errorMsgElement, 1, 0.5);
-    // formInputElement.addEventListener("click", (_event) => {
-    //     // event.target.style.backgroundColor = "";
-    //     // clearFormError(input);
-    //     clearAllFormErrors();
-    // }, {
-    //     once: true
-    // });
+
     const formInputs = document.querySelectorAll("input,textarea,label");
     formInputs.forEach(formInput => formInput.addEventListener("click", clearAllFormErrors, {
         once: true
     }));
-}
-
-/**
- * Create CSS opacity transition
- * @param {Element} formInputElement 
- * @param {number} opacity (between 0 and 1)
- * @param {number} duration (in seconds)
- */
-function createCssOpacityTransition(formInputElement, opacity, duration) {
-    if (opacity < 0) opacity = 0;
-    if (opacity > 1) opacity = 1;
-    window.setTimeout(() => {
-        formInputElement.style.opacity = `${opacity}`;
-        formInputElement.style.transition = `opacity ${duration}s ease-out`;
-    }, 40)
 }
 
 //======== Notes Storage ==========
@@ -207,19 +186,13 @@ function logAllNotes() { // for debugging
 
 //======== Notes Display ==========
 
-function fadeInNote(noteWrapper) {
-    window.setTimeout(() => {
-        noteWrapper.classList.remove("faded-out");
-        noteWrapper.classList.add("faded-in");
-    }, 40)
-}
-
 function displayNewNote(note) {
     const notesAllWrapper = document.getElementById("notes-all-wrapper");
     const noteWrapper = createNoteElement(note);
     noteWrapper.classList.add("faded-out");
     notesAllWrapper.append(noteWrapper);
-    fadeInNote(noteWrapper);
+    // fadeInNote(noteWrapper);
+    createCssOpacityTransition(noteWrapper, 1, 2)
     noteWrapper.scrollIntoView({
         behavior: 'smooth'
     });
@@ -310,4 +283,21 @@ function createNoteExpiredMsg() {
     msg.classList.add("note-expired");
     msg.innerHTML = "EXPIRED";
     return msg;
+}
+
+//======== Dynamic Transitions ==========
+
+/**
+ * Create CSS opacity transition
+ * @param {Element} ele 
+ * @param {number} opacity (between 0 and 1)
+ * @param {number} duration (in seconds)
+ */
+function createCssOpacityTransition(ele, opacity, duration) {
+    if (opacity < 0) opacity = 0;
+    if (opacity > 1) opacity = 1;
+    window.setTimeout(() => {
+        ele.style.opacity = `${opacity}`;
+        ele.style.transition = `opacity ${duration}s ease-out`;
+    }, 40)
 }
