@@ -1,34 +1,7 @@
 @font-face {
-    font-family: 'permanent_markerregular';
-    src: url('../fonts/permanentmarker-regular-webfont.woff2') format('woff2'),
-        url('../fonts/permanentmarker-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'note_thisregular';
-    src: url('../fonts/note_this-webfont.woff2') format('woff2'),
-        url('../fonts/note_this-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
     font-family: 'mansalvaregular';
     src: url('../fonts/mansalva-regular-webfont.woff2') format('woff2'),
         url('../fonts/mansalva-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'caveat_brushregular';
-    src: url('../fonts/caveatbrush-regular-webfont.woff2') format('woff2'),
-        url('../fonts/caveatbrush-regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -53,56 +26,10 @@
 }
 
 @font-face {
-    font-family: 'comic_neueregular';
-    src: url('../fonts/comicneue-regular-webfont.woff2') format('woff2'),
-        url('../fonts/comicneue-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'unica_oneregular';
-    src: url('../fonts/unicaone-regular-webfont.woff2') format('woff2'),
-        url('../fonts/unicaone-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'special_eliteregular';
-    src: url('../fonts/specialelite-regular-webfont.woff2') format('woff2'),
-        url('../fonts/specialelite-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Schoolbell';
-    src: url('../fonts/schoolbell-regular-webfont.woff2') format('woff2'),
-        url('../fonts/schoolbell-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
     font-family: 'Hack';
     src: url('../fonts/hack-regular.woff2') format('woff2'),
         url('../fonts/hack-regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
-}
-
-@font-face {
-    font-family: 'DejaVu';
-    src: url('../fonts/dejavu-sans-webfont.woff2') format('woff2'),
-        url('../fonts/dejavu-sans-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-
 }

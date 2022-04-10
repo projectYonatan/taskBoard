@@ -16,7 +16,6 @@ html {
     width: 100%;
     height: 100%;
     padding: 0.5rem 1rem;
-    /* padding-top: .25rem; */
     /* display: grid; */
     /* justify-items: center; */
 }
@@ -93,9 +92,7 @@ html {
 button,
 select,
 option {
-    /* font-family: 'comic_neueregular', monospace; */
     /* font-family: 'roboto_monoregular', monospace; */
-    /* font-family: 'DejaVu', sans-serif; */
     /* font-family: 'Hack', monospace; */
     /* font-size: 0.8rem; */
     font-family: 'Arial', sans-serif;
@@ -166,12 +163,6 @@ option {
     font-family: 'nanum_penregular', cursive;
     font-size: 1.3rem;
     color: rgba(0, 0, 0, 0.75);
-    /* font-family: 'note_thisregular', cursive; */
-    /* font-size: 1.05rem; */
-    /* text-shadow: 0 0 1px rgba(32, 32, 32, 0.25); */
-    /* font-family: 'Schoolbell', cursive; */
-    /* font-size: .975rem; */
-    /* color: rgba(0, 0, 0, 0.85); */
 }
 
 .note-details:hover {
@@ -180,8 +171,6 @@ option {
 
 .note-date,
 .note-time {
-    /* font-family: 'comic_neueregular', monospace; */
-    /* font-size: .9rem; */
     font-family: 'Hack', monospace;
     font-size: .775rem;
     padding-top: .15rem;
@@ -206,9 +195,9 @@ option {
 }
 
 .note-expired {
-    font-family: "permanent_markerregular", sans-serif;
+    font-family: 'Hack', monospace;
     font-size: 1rem;
-    padding-left: 0.4rem;
+    padding-left: 0.3rem;
     margin: 0 -0.3rem;
     color: rgba(255, 0, 0, 0.5);
     background-color: rgba(192, 0, 0, 0.25);
