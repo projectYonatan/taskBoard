@@ -167,9 +167,9 @@ html {
 
 .note-details {
     box-sizing: border-box;
-    margin: 0.6rem 0 2.2rem 0;
+    margin: .5rem 0 2.5rem 0;
     width: 97%;
-    height: 65%;
+    height: 60%;
     overflow-x: auto;
     overflow-y: hidden;
     overflow-wrap: break-word;
@@ -211,7 +211,7 @@ html {
     margin: 0 -0.3rem;
     color: rgba(255, 0, 0, 0.5);
     background-color: rgba(192, 0, 0, 0.25);
-    transform: translate(0, -3.8rem);
+    transform: translate(0, -3.6rem);
 }
 
 /* Transitions */
