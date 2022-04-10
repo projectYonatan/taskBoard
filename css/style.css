@@ -1,5 +1,5 @@
 @font-face {
-    font-family: 'mansalvaregular';
+    font-family: 'Mansalva';
     src: url('../fonts/mansalva-regular-webfont.woff2') format('woff2'),
         url('../fonts/mansalva-regular-webfont.woff') format('woff');
     font-weight: normal;
@@ -8,7 +8,7 @@
 }
 
 @font-face {
-    font-family: 'roboto_monoregular';
+    font-family: 'Roboto Mono';
     src: url('../fonts/robotomono-variablefont_wght-webfont.woff2') format('woff2'),
         url('../fonts/robotomono-variablefont_wght-webfont.woff') format('woff');
     font-weight: normal;
@@ -17,7 +17,7 @@
 }
 
 @font-face {
-    font-family: 'nanum_penregular';
+    font-family: 'Nanum Pen Script';
     src: url('../fonts/nanumpenscript-regular-webfont.woff2') format('woff2'),
         url('../fonts/nanumpenscript-regular-webfont.woff') format('woff');
     font-weight: normal;
@@ -59,7 +59,7 @@ html {
 #header {
     display: flex;
     justify-content: center;
-    font-family: "mansalvaregular", sans-serif;
+    font-family: "Mansalva", sans-serif;
     font-size: 3rem;
     /* background-color: green; */
 }
@@ -93,7 +93,7 @@ html {
     justify-content: space-evenly;
     align-items: baseline;
     color: gray;
-    font-family: 'roboto_monoregular', monospace;
+    font-family: 'Roboto Mono', monospace;
     font-size: small;
 }
 
@@ -113,7 +113,7 @@ html {
     width: 75%;
     height: 6rem;
     line-height: 2rem;
-    font-family: 'roboto_monoregular', monospace;
+    font-family: 'Roboto Mono', monospace;
     font-size: .875rem;
 }
 
@@ -128,7 +128,7 @@ html {
 button,
 select,
 option {
-    /* font-family: 'roboto_monoregular', monospace; */
+    /* font-family: 'Roboto Mono', monospace; */
     /* font-family: 'Hack', monospace; */
     /* font-size: 0.8rem; */
     font-family: 'Arial', sans-serif;
@@ -196,7 +196,7 @@ option {
     overflow-y: hidden;
     overflow-wrap: break-word;
     word-wrap: break-word;
-    font-family: 'nanum_penregular', cursive;
+    font-family: 'Nanum Pen Script', cursive;
     font-size: 1.3rem;
     color: rgba(0, 0, 0, 0.75);
 }
@@ -276,7 +276,7 @@ option {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'roboto_monoregular', monospace;
+    font-family: 'Roboto Mono', monospace;
     font-size: .8rem;
 }
 
